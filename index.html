@@ -1,90 +1,328 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>赵丽丽的网站</title>
-<style>
-  body, html {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #000; /* 黑色背景 */
-  }
-  canvas {
-    display: block;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我的考试安排 2025</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --text-main: #2d3748;
+            --text-sub: #718096;
+            --accent-color: #6b46c1;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px; /* 限制最大宽度，模拟手机H5效果 */
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 头部区域 */
+        .header {
+            text-align: center;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .countdown-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* 列表卡片 */
+        .exam-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 40px;
+        }
+
+        .exam-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            animation: slideUp 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: transform 0.2s;
+        }
+
+        .exam-card:active {
+            transform: scale(0.98);
+        }
+
+        /* 左侧日期块 */
+        .date-box {
+            background: #edf2f7;
+            min-width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            color: var(--accent-color);
+        }
+
+        .date-box .month {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .date-box .day {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        /* 右侧信息 */
+        .info-box {
+            flex: 1;
+        }
+
+        .course-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        /* 标记补考 */
+        .tag-makeup {
+            display: inline-block;
+            font-size: 10px;
+            background: #fed7d7;
+            color: #c53030;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 4px;
+            vertical-align: middle;
+            transform: translateY(-1px);
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--text-sub);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .icon {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+            opacity: 0.7;
+        }
+
+        /* 装饰性侧边条 */
+        .exam-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--accent-color);
+        }
+
+        /* 动画 */
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 针对不同科目的颜色微调 (可选) */
+        .exam-card:nth-child(even)::before {
+            background: #4299e1; /* 蓝色 */
+        }
+        .exam-card:nth-child(even) .date-box {
+            color: #4299e1;
+        }
+
+    </style>
 </head>
 <body>
-    <h3 style="color: green;">赵丽丽我爱你</h3>
-<canvas id="heartCanvas"></canvas>
+
+<div class="container">
+    <div class="header">
+        <h1>期末考试日程</h1>
+        <div id="countdown" class="countdown-badge">加载中...</div>
+    </div>
+
+    <div class="exam-list" id="examList">
+        <!-- 卡片将通过 JS 渲染在这里 -->
+    </div>
+</div>
+
 <script>
-const canvas = document.getElementById('heartCanvas');
-const ctx = canvas.getContext('2d');
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = window.innerHeight;
+    // 原始数据
+    const rawData = [
+        { "course_name": "嵌入式操作系统", "exam_time": "2025-12-26(13:30-15:30)", "location": "西院3号教学楼105" },
+        { "course_name": "补大学英语A（四）", "exam_time": "2025-12-26(10:00-12:00)", "location": "西院3号教学楼405" },
+        { "course_name": "补概率论与数理统计", "exam_time": "2025-12-25(13:30-15:30)", "location": "西院1号教学楼407" },
+        { "course_name": "计算机网络", "exam_time": "2025-12-25(10:00-12:00)", "location": "西院1号教学楼205" },
+        { "course_name": "补习近平新时代中国特色社会主义思想概论", "exam_time": "2025-12-24(10:00-12:00)", "location": "西院3号教学楼306" },
+        { "course_name": "补毛泽东思想和中国特色社会主义理论体系概论", "exam_time": "2025-12-23(13:30-15:30)", "location": "西院3号教学楼103" }
+    ];
 
-const particles = [];
-const particleCount = 1200;
+    // 图标 SVG
+    const icons = {
+        time: `<svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>`,
+        location: `<svg class="icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`
+    };
 
-// 心形方程生成坐标
-function heartFunction(t) {
-    const x = 16 * Math.sin(t) ** 3;
-    const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-    return [x, -y];
-}
+    // 数据处理函数
+    function processData(data) {
+        return data.map(item => {
+            // 解析日期: "2025-12-26(13:30-15:30)"
+            const dateMatch = item.exam_time.match(/(\d{4})-(\d{2})-(\d{2})\((.*?)\)/);
+            if (dateMatch) {
+                const fullDateStr = `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
+                const dateObj = new Date(fullDateStr);
+                const timeRange = dateMatch[4];
+                const isMakeup = item.course_name.includes("补");
+                
+                // 格式化显示的月份和日期
+                const month = dateObj.toLocaleString('default', { month: 'short' }); // Dec
+                const day = dateMatch[3]; // 26
+                
+                // 简化课程名（去掉“补”字用于显示，因为有单独标签）
+                const displayName = item.course_name.replace(/^补/, "");
 
-// 初始化粒子
-for (let i = 0; i < particleCount; i++) {
-    const t = Math.random() * Math.PI * 2;
-    const [hx, hy] = heartFunction(t);
-    particles.push({
-        x: width/2 + hx * 15,
-        y: height/2 + hy * 15,
-        size: Math.random() * 2 + 1,
-        baseX: width/2 + hx * 15,
-        baseY: height/2 + hy * 15,
-        color: `hsl(${300 + Math.random()*60}, 100%, 70%)`, // 紫粉梦幻色
-        alpha: Math.random() * 0.5 + 0.5
-    });
-}
-
-// 动画循环
-let scale = 1;
-let scaleDir = 0.01;
-
-function animate() {
-    // 用半透明黑色产生拖尾效果
-    ctx.fillStyle = 'rgba(0,0,0,0.1)'; // 越低越接近纯黑背景效果
-    ctx.fillRect(0, 0, width, height);
-
-    scale += scaleDir;
-    if (scale > 1.2 || scale < 0.8) scaleDir *= -1;
-
-    for (let p of particles) {
-        const dx = p.baseX - width/2;
-        const dy = p.baseY - height/2;
-        p.x = width/2 + dx * scale + (Math.random()-0.5)*1.5;
-        p.y = height/2 + dy * scale + (Math.random()-0.5)*1.5;
-
-        ctx.fillStyle = `rgba(255, 182, 255, ${p.alpha})`;
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = 10;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-        ctx.fill();
+                return {
+                    ...item,
+                    timestamp: dateObj.getTime(),
+                    timeRange: timeRange, // 13:30-15:30
+                    displayMonth: month.toUpperCase(),
+                    displayDay: day,
+                    isMakeup: isMakeup,
+                    displayName: displayName
+                };
+            }
+            return item;
+        }).sort((a, b) => {
+            // 按时间排序：早的在前面
+            if (a.timestamp === b.timestamp) {
+                // 如果是同一天，比较具体时间段的起始时间
+                return a.timeRange.localeCompare(b.timeRange);
+            }
+            return a.timestamp - b.timestamp;
+        });
     }
 
-    requestAnimationFrame(animate);
-}
+    // 渲染函数
+    function render() {
+        const sortedData = processData(rawData);
+        const listContainer = document.getElementById('examList');
+        const countdownEl = document.getElementById('countdown');
 
-animate();
+        // 倒计时逻辑
+        if (sortedData.length > 0) {
+            const firstExam = sortedData[0];
+            const now = new Date();
+            const examDate = new Date(firstExam.timestamp);
+            const diffTime = examDate - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if(diffDays > 0) {
+                countdownEl.innerText = `距离首场考试还有 ${diffDays} 天`;
+            } else if (diffDays === 0) {
+                countdownEl.innerText = `考试就在今天，加油！`;
+            } else {
+                countdownEl.innerText = `考试进行中`;
+            }
+        }
 
-window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-});
+        // 生成卡片
+        let html = '';
+        sortedData.forEach((exam, index) => {
+            // 延迟动画效果
+            const delay = index * 0.1;
+            
+            const makeupTag = exam.isMakeup ? `<span class="tag-makeup">补考</span>` : '';
+
+            html += `
+                <div class="exam-card" style="animation-delay: ${delay}s">
+                    <div class="date-box">
+                        <span class="month">${exam.displayMonth}</span>
+                        <span class="day">${exam.displayDay}</span>
+                    </div>
+                    <div class="info-box">
+                        <div class="course-title">
+                            ${makeupTag}${exam.displayName}
+                        </div>
+                        <div class="meta-row">
+                            <div class="meta-item">
+                                ${icons.time}
+                                <span>${exam.timeRange}</span>
+                            </div>
+                            <div class="meta-item">
+                                ${icons.location}
+                                <span>${exam.location}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        listContainer.innerHTML = html;
+    }
+
+    // 初始化
+    render();
+
 </script>
 </body>
 </html>
