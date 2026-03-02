@@ -3,328 +3,932 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>我的考试安排 2025</title>
+    <title>我的成绩单</title>
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --card-bg: rgba(255, 255, 255, 0.92);
-            --text-main: #2d3748;
-            --text-sub: #718096;
-            --accent-color: #6b46c1;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --primary-color: #4a90e2;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-sub: #888888;
+            --accent-green: #2ecc71;
+            --accent-orange: #f39c12;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: var(--primary-gradient);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
             color: var(--text-main);
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px; /* 限制最大宽度，模拟手机H5效果 */
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* 头部区域 */
-        .header {
-            text-align: center;
-            color: white;
-            padding: 20px 0;
-            margin-bottom: 10px;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .countdown-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-
-        /* 列表卡片 */
-        .exam-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
             padding-bottom: 40px;
         }
 
-        .exam-card {
-            background: var(--card-bg);
-            border-radius: 16px;
+        /* 顶部统计区域 */
+        .dashboard {
+            background: linear-gradient(135deg, var(--primary-color), #6ab0f3);
+            color: white;
             padding: 20px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
             box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .dashboard h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            text-align: center;
+        }
+
+        .stat-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .stat-item .label {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        /* 筛选区域 */
+        .filters {
             display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            background-color: var(--bg-color);
+        }
+
+        .filter-select {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: white;
+            font-size: 14px;
+            color: var(--text-main);
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 10px auto;
+        }
+
+        /* 列表区域 */
+        .course-list {
+            padding: 0 20px;
+        }
+
+        .course-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            animation: slideUp 0.5s ease-out forwards;
-            opacity: 0;
-            transform: translateY(20px);
             transition: transform 0.2s;
         }
 
-        .exam-card:active {
-            transform: scale(0.98);
-        }
-
-        /* 左侧日期块 */
-        .date-box {
-            background: #edf2f7;
-            min-width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-right: 16px;
-            color: var(--accent-color);
-        }
-
-        .date-box .month {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .date-box .day {
-            font-size: 24px;
-            font-weight: 800;
-            line-height: 1;
-        }
-
-        /* 右侧信息 */
-        .info-box {
+        .card-left {
             flex: 1;
         }
 
-        .course-title {
+        .course-name {
             font-size: 16px;
-            font-weight: 700;
-            color: var(--text-main);
+            font-weight: 600;
             margin-bottom: 6px;
-            line-height: 1.4;
+            color: var(--text-main);
         }
 
-        /* 标记补考 */
-        .tag-makeup {
-            display: inline-block;
-            font-size: 10px;
-            background: #fed7d7;
-            color: #c53030;
+        .course-meta {
+            font-size: 12px;
+            color: var(--text-sub);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .tag {
             padding: 2px 6px;
             border-radius: 4px;
-            margin-right: 4px;
-            vertical-align: middle;
-            transform: translateY(-1px);
+            background-color: #f0f0f0;
+            color: #666;
         }
 
-        .meta-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
+        .tag.required { background-color: #e3f2fd; color: #1976d2; } /* 必修课颜色 */
+        .tag.elective { background-color: #e8f5e9; color: #388e3c; } /* 选修课颜色 */
+
+        .card-right {
+            text-align: right;
+            min-width: 70px;
+        }
+
+        .score {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+
+        .gpa-sub {
+            font-size: 11px;
             color: var(--text-sub);
+            margin-top: 4px;
         }
 
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
+        .high-score { color: var(--accent-green); }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-sub);
+            font-size: 14px;
         }
-
-        .icon {
-            width: 14px;
-            height: 14px;
-            fill: currentColor;
-            opacity: 0.7;
-        }
-
-        /* 装饰性侧边条 */
-        .exam-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--accent-color);
-        }
-
-        /* 动画 */
-        @keyframes slideUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* 针对不同科目的颜色微调 (可选) */
-        .exam-card:nth-child(even)::before {
-            background: #4299e1; /* 蓝色 */
-        }
-        .exam-card:nth-child(even) .date-box {
-            color: #4299e1;
-        }
-
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>期末考试日程</h1>
-        <div id="countdown" class="countdown-badge">加载中...</div>
+    <!-- 顶部统计仪表盘 -->
+    <div class="dashboard">
+        <h2 id="dashboard-title">成绩总览</h2>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="value" id="avg-gpa">-</div>
+                <div class="label">平均绩点</div>
+            </div>
+            <div class="stat-item">
+                <div class="value" id="total-credits">-</div>
+                <div class="label">总学分</div>
+            </div>
+            <div class="stat-item">
+                <div class="value" id="course-count">-</div>
+                <div class="label">课程数</div>
+            </div>
+        </div>
     </div>
 
-    <div class="exam-list" id="examList">
-        <!-- 卡片将通过 JS 渲染在这里 -->
+    <!-- 筛选器 -->
+    <div class="filters">
+        <select id="semester-filter" class="filter-select">
+            <option value="all">所有学期</option>
+            <!-- 动态生成选项 -->
+        </select>
+        <select id="type-filter" class="filter-select">
+            <option value="all">所有类型</option>
+            <!-- 动态生成选项 -->
+        </select>
     </div>
-</div>
 
-<script>
-    // 原始数据
-    const rawData = [
-        { "course_name": "嵌入式操作系统", "exam_time": "2025-12-26(13:30-15:30)", "location": "3教105" },
-        { "course_name": "补大学英语A（四）", "exam_time": "2025-12-26(10:00-12:00)", "location": "3教405" },
-        { "course_name": "补概率论与数理统计", "exam_time": "2025-12-25(13:30-15:30)", "location": "1教407" },
-        { "course_name": "计算机网络", "exam_time": "2025-12-25(10:00-12:00)", "location": "1教205" },
-        { "course_name": "补习近平新时代中国特色社会主义思想概论", "exam_time": "2025-12-24(10:00-12:00)", "location": "3教306" },
-        { "course_name": "补毛泽东思想和中国特色社会主义理论体系概论", "exam_time": "2025-12-23(13:30-15:30)", "location": "3教103" },
-        { "course_name": "RFID", "exam_time": "2025-12-19(10:20-12:20)", "location": "综合楼801" }
-    ];
+    <!-- 课程列表 -->
+    <div class="course-list" id="course-list">
+        <!-- 动态生成卡片 -->
+    </div>
 
-    // 图标 SVG
-    const icons = {
-        time: `<svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>`,
-        location: `<svg class="icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`
-    };
+    <script>
+        // ================= 数据源 =================
+        const dataList = [
+  {
+    "course_name": "思想道德与法治",
+    "score": "65",
+    "grade_point": "1.50",
+    "credit": "2.0",
+    "credit_grade_point": "3.00",
+    "academic_year": "2023-2024",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "李倩"
+  },
+  {
+    "course_name": "大学英语A(一)",
+    "score": "63",
+    "grade_point": "1.30",
+    "credit": "3.5",
+    "credit_grade_point": "4.55",
+    "academic_year": "2023-2024",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "杨胜娟"
+  },
+  {
+    "course_name": "高等数学（一）",
+    "score": "75",
+    "grade_point": "2.50",
+    "credit": "5.0",
+    "credit_grade_point": "12.50",
+    "academic_year": "2023-2024",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "俞珊珊"
+  },
+  {
+    "course_name": "职业生涯规划与就业指导（一）",
+    "score": "84",
+    "grade_point": "3.40",
+    "credit": "1",
+    "credit_grade_point": "3.40",
+    "academic_year": "2023-2024",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "杨春梅"
+  },
+  {
+    "course_name": "大学计算机基础",
+    "score": "90",
+    "grade_point": "4.00",
+    "credit": "1.5",
+    "credit_grade_point": "6.00",
+    "academic_year": "2023-2024",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "李建勋;冀松"
+  },
+  {
+    "course_name": "工程制图",
+    "score": "75",
+    "grade_point": "2.50",
+    "credit": "2.0",
+    "credit_grade_point": "5.00",
+    "academic_year": "2023-2024",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "蒋义然"
+  },
+  {
+    "course_name": "心理健康",
+    "score": "96",
+    "grade_point": "4.60",
+    "credit": "2",
+    "credit_grade_point": "9.20",
+    "academic_year": "2023-2024",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "网络课教师"
+  },
+  {
+    "course_name": "劳动课（一）",
+    "score": "76",
+    "grade_point": "2.60",
+    "credit": "0.5",
+    "credit_grade_point": "1.30",
+    "academic_year": "2023-2024",
+    "semester": "1",
+    "course_type": "公共选修课",
+    "teacher": "辅导员"
+  },
+  {
+    "course_name": "大学体育一（乒乓球）",
+    "score": "79",
+    "grade_point": "2.90",
+    "credit": "1.0",
+    "credit_grade_point": "2.90",
+    "academic_year": "2023-2024",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "李利伟"
+  },
+  {
+    "course_name": "劳动课（二）",
+    "score": "86",
+    "grade_point": "3.60",
+    "credit": "0.5",
+    "credit_grade_point": "1.80",
+    "academic_year": "2023-2024",
+    "semester": "2",
+    "course_type": "公共选修课",
+    "teacher": "辅导员"
+  },
+  {
+    "course_name": "中国近现代史纲要",
+    "score": "60",
+    "grade_point": "1.00",
+    "credit": "2.0",
+    "credit_grade_point": "2.00",
+    "academic_year": "2023-2024",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "关丽丽"
+  },
+  {
+    "course_name": "大学英语A（二）",
+    "score": "69",
+    "grade_point": "1.90",
+    "credit": "3.5",
+    "credit_grade_point": "6.65",
+    "academic_year": "2023-2024",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "杨胜娟"
+  },
+  {
+    "course_name": "高等数学（二）",
+    "score": "75",
+    "grade_point": "2.50",
+    "credit": "5.0",
+    "credit_grade_point": "12.50",
+    "academic_year": "2023-2024",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "黄冬梅"
+  },
+  {
+    "course_name": "程序设计基础",
+    "score": "94",
+    "grade_point": "4.40",
+    "credit": "4.0",
+    "credit_grade_point": "17.60",
+    "academic_year": "2023-2024",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "李志芳"
+  },
+  {
+    "course_name": "电路原理",
+    "score": "60",
+    "grade_point": "1.00",
+    "credit": "4.0",
+    "credit_grade_point": "4.00",
+    "academic_year": "2023-2024",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "于拴道"
+  },
+  {
+    "course_name": "认识实习",
+    "score": "89",
+    "grade_point": "3.90",
+    "credit": "2.0",
+    "credit_grade_point": "7.80",
+    "academic_year": "2023-2024",
+    "semester": "2",
+    "course_type": "实践环节",
+    "teacher": "刘强"
+  },
+  {
+    "course_name": "军事理论",
+    "score": "65",
+    "grade_point": "1.50",
+    "credit": "1.5",
+    "credit_grade_point": "2.25",
+    "academic_year": "2023-2024",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "王磊（集团）"
+  },
+  {
+    "course_name": "影视鉴赏",
+    "score": "75",
+    "grade_point": "2.50",
+    "credit": "2.0",
+    "credit_grade_point": "5.00",
+    "academic_year": "2023-2024",
+    "semester": "2",
+    "course_type": "公共选修课",
+    "teacher": "王浩宇"
+  },
+  {
+    "course_name": "大学体育二（篮球）",
+    "score": "70",
+    "grade_point": "2.00",
+    "credit": "1.0",
+    "credit_grade_point": "2.00",
+    "academic_year": "2023-2024",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "吴海池"
+  },
+  {
+    "course_name": "劳动课（三）",
+    "score": "87",
+    "grade_point": "3.70",
+    "credit": "0.5",
+    "credit_grade_point": "1.85",
+    "academic_year": "2024-2025",
+    "semester": "1",
+    "course_type": "公共选修课",
+    "teacher": "辅导员"
+  },
+  {
+    "course_name": "马克思主义基本原理概论",
+    "score": "67",
+    "grade_point": "1.70",
+    "credit": "3.0",
+    "credit_grade_point": "5.10",
+    "academic_year": "2024-2025",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "边占水"
+  },
+  {
+    "course_name": "大学英语A(三)",
+    "score": "78",
+    "grade_point": "2.80",
+    "credit": "3.5",
+    "credit_grade_point": "9.80",
+    "academic_year": "2024-2025",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "杨胜娟"
+  },
+  {
+    "course_name": "线性代数",
+    "score": "68",
+    "grade_point": "1.80",
+    "credit": "2.0",
+    "credit_grade_point": "3.60",
+    "academic_year": "2024-2025",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "吴长刚"
+  },
+  {
+    "course_name": "大学物理实验",
+    "score": "94",
+    "grade_point": "4.40",
+    "credit": "1.0",
+    "credit_grade_point": "4.40",
+    "academic_year": "2024-2025",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "侯双印"
+  },
+  {
+    "course_name": "数据结构",
+    "score": "68",
+    "grade_point": "1.80",
+    "credit": "4.0",
+    "credit_grade_point": "7.20",
+    "academic_year": "2024-2025",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "牛齐明"
+  },
+  {
+    "course_name": "Java程序设计",
+    "score": "91",
+    "grade_point": "4.10",
+    "credit": "4.0",
+    "credit_grade_point": "16.40",
+    "academic_year": "2024-2025",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "方艳辉"
+  },
+  {
+    "course_name": "离散数学",
+    "score": "68",
+    "grade_point": "1.80",
+    "credit": "4.0",
+    "credit_grade_point": "7.20",
+    "academic_year": "2024-2025",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "康亚男"
+  },
+  {
+    "course_name": "电子电路设计实践",
+    "score": "93",
+    "grade_point": "4.30",
+    "credit": "2.0",
+    "credit_grade_point": "8.60",
+    "academic_year": "2024-2025",
+    "semester": "1",
+    "course_type": "实践环节",
+    "teacher": "张鹏远"
+  },
+  {
+    "course_name": "形势与政策(三)",
+    "score": "94",
+    "grade_point": "4.40",
+    "credit": "0.25",
+    "credit_grade_point": "1.10",
+    "academic_year": "2024-2025",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "张晓坤"
+  },
+  {
+    "course_name": "生命智能",
+    "score": "96.33",
+    "grade_point": "4.63",
+    "credit": "2.0",
+    "credit_grade_point": "9.27",
+    "academic_year": "2024-2025",
+    "semester": "1",
+    "course_type": "公共选修课",
+    "teacher": "网络课教师"
+  },
+  {
+    "course_name": "大学体育三（排球）",
+    "score": "76",
+    "grade_point": "2.60",
+    "credit": "1.0",
+    "credit_grade_point": "2.60",
+    "academic_year": "2024-2025",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "张彪"
+  },
+  {
+    "course_name": "毛泽东思想和中国特色社会主义理论体系概论",
+    "score": "61",
+    "grade_point": "1.10",
+    "credit": "2.0",
+    "credit_grade_point": "2.20",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "邓晓峥"
+  },
+  {
+    "course_name": "大学英语A(四)",
+    "score": "70",
+    "grade_point": "2.00",
+    "credit": "3.5",
+    "credit_grade_point": "7.00",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "杨胜娟"
+  },
+  {
+    "course_name": "概率论与数理统计",
+    "score": "63",
+    "grade_point": "1.30",
+    "credit": "3.0",
+    "credit_grade_point": "3.90",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "孟祥菊"
+  },
+  {
+    "course_name": "习近平新时代中国特色社会主义思想概论",
+    "score": "69",
+    "grade_point": "1.90",
+    "credit": "3.0",
+    "credit_grade_point": "5.70",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "崔树刚"
+  },
+  {
+    "course_name": "思想政治理论综合实践",
+    "score": "85",
+    "grade_point": "3.50",
+    "credit": "2.0",
+    "credit_grade_point": "7.00",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "实践环节",
+    "teacher": "邓晓峥"
+  },
+  {
+    "course_name": "大学物理",
+    "score": "61",
+    "grade_point": "1.00",
+    "credit": "4.0",
+    "credit_grade_point": "4.00",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "侯双印"
+  },
+  {
+    "course_name": "RFID原理及应用",
+    "score": "67",
+    "grade_point": "1.70",
+    "credit": "3.0",
+    "credit_grade_point": "5.10",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "张鹏远"
+  },
+  {
+    "course_name": "数据库系统",
+    "score": "77",
+    "grade_point": "2.70",
+    "credit": "3.0",
+    "credit_grade_point": "8.10",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "方艳辉"
+  },
+  {
+    "course_name": "数字电子技术",
+    "score": "73",
+    "grade_point": "2.30",
+    "credit": "3.0",
+    "credit_grade_point": "6.90",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "朱志平"
+  },
+  {
+    "course_name": "程序设计实践",
+    "score": "90",
+    "grade_point": "4.00",
+    "credit": "2.0",
+    "credit_grade_point": "8.00",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "实践环节",
+    "teacher": "李帅"
+  },
+  {
+    "course_name": "形势与政策（四）",
+    "score": "免考",
+    "grade_point": "1.00",
+    "credit": "0.25",
+    "credit_grade_point": "0.25",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "窦万顺"
+  },
+  {
+    "course_name": "劳动课（四）",
+    "score": "87",
+    "grade_point": "3.70",
+    "credit": "0.5",
+    "credit_grade_point": "1.85",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "公共选修课",
+    "teacher": "辅导员"
+  },
+  {
+    "course_name": "国学智慧",
+    "score": "93.54",
+    "grade_point": "4.35",
+    "credit": "2.0",
+    "credit_grade_point": "8.71",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "公共选修课",
+    "teacher": "网络课教师"
+  },
+  {
+    "course_name": "大学体育四（跆拳道）",
+    "score": "87",
+    "grade_point": "3.70",
+    "credit": "1.0",
+    "credit_grade_point": "3.70",
+    "academic_year": "2024-2025",
+    "semester": "2",
+    "course_type": "必修课",
+    "teacher": "张阔"
+  },
+  {
+    "course_name": "人事心理学",
+    "score": "87",
+    "grade_point": "3.70",
+    "credit": "2.0",
+    "credit_grade_point": "7.40",
+    "academic_year": "2025-2026",
+    "semester": "1",
+    "course_type": "公共选修课",
+    "teacher": "崔树刚"
+  },
+  {
+    "course_name": "计算机网络",
+    "score": "75",
+    "grade_point": "2.50",
+    "credit": "4.0",
+    "credit_grade_point": "10.00",
+    "academic_year": "2025-2026",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "李帅"
+  },
+  {
+    "course_name": "嵌入式操作系统",
+    "score": "71",
+    "grade_point": "2.10",
+    "credit": "3.0",
+    "credit_grade_point": "6.30",
+    "academic_year": "2025-2026",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "刘强"
+  },
+  {
+    "course_name": "移动通信技术",
+    "score": "70",
+    "grade_point": "2.00",
+    "credit": "2.0",
+    "credit_grade_point": "4.00",
+    "academic_year": "2025-2026",
+    "semester": "1",
+    "course_type": "系定选修课",
+    "teacher": "刘倩倩"
+  },
+  {
+    "course_name": "Linux系统开发实践",
+    "score": "89",
+    "grade_point": "3.90",
+    "credit": "1.0",
+    "credit_grade_point": "3.90",
+    "academic_year": "2025-2026",
+    "semester": "1",
+    "course_type": "实践环节",
+    "teacher": "刘强"
+  },
+  {
+    "course_name": "形势与政策（五）",
+    "score": "96",
+    "grade_point": "4.60",
+    "credit": "0.25",
+    "credit_grade_point": "1.15",
+    "academic_year": "2025-2026",
+    "semester": "1",
+    "course_type": "必修课",
+    "teacher": "王运辉"
+  }
+];
 
-    // 数据处理函数
-    function processData(data) {
-        return data.map(item => {
-            // 解析日期: "2025-12-26(13:30-15:30)"
-            const dateMatch = item.exam_time.match(/(\d{4})-(\d{2})-(\d{2})\((.*?)\)/);
-            if (dateMatch) {
-                const fullDateStr = `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
-                const dateObj = new Date(fullDateStr);
-                const timeRange = dateMatch[4];
-                const isMakeup = item.course_name.includes("补");
-                
-                // 格式化显示的月份和日期
-                const month = dateObj.toLocaleString('default', { month: 'short' }); // Dec
-                const day = dateMatch[3]; // 26
-                
-                // 简化课程名（去掉“补”字用于显示，因为有单独标签）
-                const displayName = item.course_name.replace(/^补/, "");
 
-                return {
-                    ...item,
-                    timestamp: dateObj.getTime(),
-                    timeRange: timeRange, // 13:30-15:30
-                    displayMonth: month.toUpperCase(),
-                    displayDay: day,
-                    isMakeup: isMakeup,
-                    displayName: displayName
-                };
-            }
-            return item;
-        }).sort((a, b) => {
-            // 按时间排序：早的在前面
-            if (a.timestamp === b.timestamp) {
-                // 如果是同一天，比较具体时间段的起始时间
-                return a.timeRange.localeCompare(b.timeRange);
-            }
-            return a.timestamp - b.timestamp;
+        // ================= 核心逻辑 =================
+
+        // 1. 初始化年份映射 (将 2025-2026 映射为 大X)
+        let uniqueYears = [...new Set(dataList.map(item => item.academic_year))].sort();
+        
+        // 辅助函数：获取语义化的学期名称
+        function getSemesterName(year, sem) {
+            const index = uniqueYears.indexOf(year);
+            const gradeNames = ['大一', '大二', '大三', '大四']; // 防止延毕
+            const grade = gradeNames[index] || year; // 如果超出范围显示原年份
+            const semName = sem == '1' ? '上' : (sem == '2' ? '下' : '其他');
+            return `${grade}${semName}`;
+        }
+
+        // 辅助函数：给数据对象添加语义化时间字段，方便排序和展示
+        dataList.forEach(item => {
+            item.semesterLabel = getSemesterName(item.academic_year, item.semester);
+            // 创建一个用于排序的权重值
+            const yearIdx = uniqueYears.indexOf(item.academic_year);
+            item.sortWeight = yearIdx * 10 + parseInt(item.semester);
         });
-    }
 
-    // 渲染函数
-    function render() {
-        const sortedData = processData(rawData);
-        const listContainer = document.getElementById('examList');
-        const countdownEl = document.getElementById('countdown');
+        // 按照时间倒序排列 (最新的在最上面)
+        dataList.sort((a, b) => b.sortWeight - a.sortWeight);
 
-        // 倒计时逻辑
-        if (sortedData.length > 0) {
-            const firstExam = sortedData[0];
-            const now = new Date();
-            const examDate = new Date(firstExam.timestamp);
-            const diffTime = examDate - now;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        // ================= DOM 元素 =================
+        const courseListEl = document.getElementById('course-list');
+        const semesterFilterEl = document.getElementById('semester-filter');
+        const typeFilterEl = document.getElementById('type-filter');
+        const avgGpaEl = document.getElementById('avg-gpa');
+        const totalCreditsEl = document.getElementById('total-credits');
+        const courseCountEl = document.getElementById('course-count');
+
+        // ================= 渲染筛选选项 =================
+        function initFilters() {
+            // 学期选项
+            const semesters = [...new Set(dataList.map(d => d.semesterLabel))].sort();
+            // 注意：这里可能需要自定义排序让 大一上 在前 或 在后，目前是字符排序
+            semesters.forEach(sem => {
+                const option = document.createElement('option');
+                option.value = sem;
+                option.textContent = sem;
+                semesterFilterEl.appendChild(option);
+            });
+
+            // 课程类型选项
+            const types = [...new Set(dataList.map(d => d.course_type))];
+            types.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                typeFilterEl.appendChild(option);
+            });
+        }
+
+        // ================= 计算统计数据 =================
+        function calculateStats(list) {
+            if (list.length === 0) {
+                avgGpaEl.textContent = "0.00";
+                totalCreditsEl.textContent = "0";
+                courseCountEl.textContent = "0";
+                return;
+            }
+
+            let totalCredit = 0;
+            let totalCreditGP = 0; // 学分绩点之和 (学分 * 绩点)
+
+            list.forEach(item => {
+                const credit = parseFloat(item.credit) || 0;
+                // 注意：你的数据源里已经有 credit_grade_point 了，可以直接用
+                // 为了保险，也可以重新算： const gp = parseFloat(item.grade_point);
+                const creditGP = parseFloat(item.credit_grade_point) || 0;
+
+                totalCredit += credit;
+                totalCreditGP += creditGP;
+            });
+
+            // 平均学分绩点 = Σ(课程绩点×课程学分) / Σ课程学分
+            const avgGpa = totalCredit > 0 ? (totalCreditGP / totalCredit) : 0;
+
+            // 动画效果更新数值
+            avgGpaEl.textContent = avgGpa.toFixed(2);
+            totalCreditsEl.textContent = totalCredit.toFixed(1).replace(/\.0$/, ''); // 去掉 .0
+            courseCountEl.textContent = list.length;
+        }
+
+        // ================= 渲染列表 =================
+        function renderList(list) {
+            courseListEl.innerHTML = '';
+
+            if (list.length === 0) {
+                courseListEl.innerHTML = '<div class="empty-state">没有找到相关课程记录</div>';
+                return;
+            }
+
+            list.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'course-card';
+
+                // 根据分数设置颜色 class
+                const scoreClass = parseFloat(item.score) >= 90 ? 'high-score' : 'score';
+                // 根据类型设置 tag class
+                const typeClass = item.course_type.includes('必修') ? 'required' : 
+                                  (item.course_type.includes('选修') ? 'elective' : '');
+
+                card.innerHTML = `
+                    <div class="card-left">
+                        <div class="course-name">${item.course_name}</div>
+                        <div class="course-meta">
+                            <span class="tag ${typeClass}">${item.course_type}</span>
+                            <span>${item.semesterLabel}</span>
+                            <span>${item.credit}学分</span>
+                        </div>
+                    </div>
+                    <div class="card-right">
+                        <div class="${scoreClass}">${item.score}</div>
+                        <div class="gpa-sub">GP: ${item.grade_point}</div>
+                    </div>
+                `;
+                courseListEl.appendChild(card);
+            });
+        }
+
+        // ================= 主逻辑：筛选与更新 =================
+        function updatePage() {
+            const semVal = semesterFilterEl.value;
+            const typeVal = typeFilterEl.value;
+
+            // 过滤数据
+            const filteredData = dataList.filter(item => {
+                const matchSem = semVal === 'all' || item.semesterLabel === semVal;
+                const matchType = typeVal === 'all' || item.course_type === typeVal;
+                return matchSem && matchType;
+            });
+
+            // 渲染
+            renderList(filteredData);
+            calculateStats(filteredData);
             
-            if(diffDays > 0) {
-                countdownEl.innerText = `距离首场考试还有 ${diffDays} 天`;
-            } else if (diffDays === 0) {
-                countdownEl.innerText = `考试就在今天，加油！`;
+            // 更新标题
+            const titleEl = document.getElementById('dashboard-title');
+            if(semVal !== 'all' || typeVal !== 'all') {
+                titleEl.textContent = "筛选统计";
             } else {
-                countdownEl.innerText = `考试进行中`;
+                titleEl.textContent = "所有课程总览";
             }
         }
 
-        // 生成卡片
-        let html = '';
-        sortedData.forEach((exam, index) => {
-            // 延迟动画效果
-            const delay = index * 0.1;
-            
-            const makeupTag = exam.isMakeup ? `<span class="tag-makeup">补考</span>` : '';
+        // ================= 事件监听与初始化 =================
+        semesterFilterEl.addEventListener('change', updatePage);
+        typeFilterEl.addEventListener('change', updatePage);
 
-            html += `
-                <div class="exam-card" style="animation-delay: ${delay}s">
-                    <div class="date-box">
-                        <span class="month">${exam.displayMonth}</span>
-                        <span class="day">${exam.displayDay}</span>
-                    </div>
-                    <div class="info-box">
-                        <div class="course-title">
-                            ${makeupTag}${exam.displayName}
-                        </div>
-                        <div class="meta-row">
-                            <div class="meta-item">
-                                ${icons.time}
-                                <span>${exam.timeRange}</span>
-                            </div>
-                            <div class="meta-item">
-                                ${icons.location}
-                                <span>${exam.location}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        listContainer.innerHTML = html;
-    }
+        // 启动
+        initFilters();
+        updatePage(); // 初始渲染所有数据
 
-    // 初始化
-    render();
-
-</script>
+    </script>
 </body>
 </html>
-
