@@ -52,10 +52,7 @@ input {
 </head>
 <body>
 <div class="container">
-<h2>🧠 特殊空白字符工具（增强版）</h2>
-<p>支持复制 & 隐形字符插入</p>
-
-<h3>📌 1. 字符复制区</h3>
+<h3>字符复制区</h3>
 
 <div class="card"><div>普通空格</div><button onclick="copyChar(' ')">复制</button></div>
 <div class="card"><div>不换行空格 U+00A0</div><button onclick="copyChar('\u00A0')">复制</button></div>
@@ -64,37 +61,11 @@ input {
 <div class="card"><div>零宽不连接符 U+200C</div><button onclick="copyChar('\u200C')">复制</button></div>
 <div class="card"><div>零宽连接符 U+200D</div><button onclick="copyChar('\u200D')">复制</button></div>
 <div class="card"><div>Word Joiner U+2060</div><button onclick="copyChar('\u2060')">复制</button></div>
-
-<h3>📌 2. 隐形文本生成器</h3>
-<div class="card" style="flex-direction: column; align-items: flex-start;">
-<input id="inputText" placeholder="输入文本，例如 admin" />
-<div style="margin-top:10px;">
-<button onclick="encodeText()">生成零宽隐形版本</button>
-<button onclick="copyGenerated()">复制结果</button>
-</div>
-<pre id="output" style="margin-top:10px; background:#0f172a; padding:10px; border-radius:8px;"></pre>
-</div>
-
 </div>
 
 <script>
 function copyChar(char){
     navigator.clipboard.writeText(char).then(()=>alert('已复制'));
-}
-
-let generated = '';
-
-function encodeText(){
-    const text = document.getElementById('inputText').value;
-    generated = '';
-    for(let c of text){
-        generated += c + '\u200B'; // 插入零宽空格
-    }
-    document.getElementById('output').innerText = generated;
-}
-
-function copyGenerated(){
-    navigator.clipboard.writeText(generated).then(()=>alert('已复制隐形文本'));
 }
 </script>
 </body>
