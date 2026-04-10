@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8" />
+<title>特殊空白字符工具</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 20px;
+}
+.container {
+    max-width: 900px;
+    margin: auto;
+}
+.card {
+    background: #1e293b;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+button {
+    background: #38bdf8;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #000;
+    font-weight: bold;
+}
+button:hover {
+    background: #0ea5e9;
+}
+input {
+    width: 70%;
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    margin-right: 10px;
+}
+.char {
+    font-size: 18px;
+    padding: 0 10px;
+    background: #334155;
+    border-radius: 6px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>🧠 特殊空白字符工具（增强版）</h2>
+<p>支持复制 & 隐形字符插入</p>
+
+<h3>📌 1. 字符复制区</h3>
+
+<div class="card"><div>普通空格</div><button onclick="copyChar(' ')">复制</button></div>
+<div class="card"><div>不换行空格 U+00A0</div><button onclick="copyChar('\u00A0')">复制</button></div>
+<div class="card"><div>全角空格 U+3000</div><button onclick="copyChar('\u3000')">复制</button></div>
+<div class="card"><div>零宽空格 U+200B</div><button onclick="copyChar('\u200B')">复制</button></div>
+<div class="card"><div>零宽不连接符 U+200C</div><button onclick="copyChar('\u200C')">复制</button></div>
+<div class="card"><div>零宽连接符 U+200D</div><button onclick="copyChar('\u200D')">复制</button></div>
+<div class="card"><div>Word Joiner U+2060</div><button onclick="copyChar('\u2060')">复制</button></div>
+
+<h3>📌 2. 隐形文本生成器</h3>
+<div class="card" style="flex-direction: column; align-items: flex-start;">
+<input id="inputText" placeholder="输入文本，例如 admin" />
+<div style="margin-top:10px;">
+<button onclick="encodeText()">生成零宽隐形版本</button>
+<button onclick="copyGenerated()">复制结果</button>
+</div>
+<pre id="output" style="margin-top:10px; background:#0f172a; padding:10px; border-radius:8px;"></pre>
+</div>
+
+</div>
+
+<script>
+function copyChar(char){
+    navigator.clipboard.writeText(char).then(()=>alert('已复制'));
+}
+
+let generated = '';
+
+function encodeText(){
+    const text = document.getElementById('inputText').value;
+    generated = '';
+    for(let c of text){
+        generated += c + '\u200B'; // 插入零宽空格
+    }
+    document.getElementById('output').innerText = generated;
+}
+
+function copyGenerated(){
+    navigator.clipboard.writeText(generated).then(()=>alert('已复制隐形文本'));
+}
+</script>
+</body>
+</html>
