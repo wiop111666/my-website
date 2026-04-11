@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生信息检索系统</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --hover-color: #45a049;
+            --bg-color: #f4f7f6;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+        }
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: var(--hover-color);
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #status {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            color: #333;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>学生信息检索系统</h1>
+    
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="请输入学生姓名 (支持模糊搜索)" disabled>
+        <button id="searchBtn" onclick="searchStudent()" disabled>搜索</button>
+    </div>
+
+    <div id="status">正在加载数据文件，请稍候...</div>
+
+    <div style="overflow-x: auto;">
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>学号</th>
+                    <th>姓名</th>
+                    <th>学院代码</th>
+                    <th>学院名称</th>
+                    <th>专业代码</th>
+                    <th>专业名称</th>
+                    <th>班级</th>
+                    <th>年级</th>
+                </tr>
+            </thead>
+            <tbody id="resultBody">
+                <!-- 搜索结果将在这里显示 -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // 存储所有合并后的学生数据
+    let allStudentsData = [];
+
+    // 页面加载完成后自动获取数据
+    window.onload = async function() {
+        const statusEl = document.getElementById('status');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+
+        // 生成8个文件名: student_data_01.json 到 student_data_08.json
+        const fileNames = [];
+        for (let i = 1; i <= 8; i++) {
+            fileNames.push(`student_data_0${i}.json`);
+        }
+
+        try {
+            // 使用 Promise.all 并发获取所有JSON文件
+            const fetchPromises = fileNames.map(file => 
+                fetch(`./${file}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error(`${file} 加载失败`);
+                        return response.json();
+                    })
+                    .catch(err => {
+                        console.warn(err.message);
+                        return []; // 如果某个文件不存在，返回空数组，避免阻塞其他文件加载
+                    })
+            );
+
+            const results = await Promise.all(fetchPromises);
+            
+            // 将8个数组合并成一个大数组
+            allStudentsData = results.flat();
+
+            if (allStudentsData.length > 0) {
+                statusEl.innerHTML = `数据加载成功！共加载了 <b>${allStudentsData.length}</b> 条学生信息。`;
+                statusEl.style.color = "green";
+                // 启用搜索框和按钮
+                searchInput.disabled = false;
+                searchBtn.disabled = false;
+                searchInput.focus();
+            } else {
+                statusEl.innerHTML = `未找到任何数据，请检查 JSON 文件路径是否正确。`;
+                statusEl.style.color = "red";
+            }
+
+        } catch (error) {
+            statusEl.innerHTML = `数据加载发生错误：${error.message}`;
+            statusEl.style.color = "red";
+        }
+    };
+
+    // 监听回车键搜索
+    document.getElementById('searchInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            searchStudent();
+        }
+    });
+
+    // 搜索逻辑
+    function searchStudent() {
+        const keyword = document.getElementById('searchInput').value.trim();
+        const tbody = document.getElementById('resultBody');
+        
+        // 清空上次结果
+        tbody.innerHTML = '';
+
+        if (!keyword) {
+            alert("请输入要搜索的姓名！");
+            return;
+        }
+
+        // 过滤数据 (支持部分匹配/模糊搜索)
+        const matchedStudents = allStudentsData.filter(student => 
+            student.name && student.name.includes(keyword)
+        );
+
+        // 渲染结果
+        if (matchedStudents.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" class="no-data">没有找到包含 "${keyword}" 的学生信息</td></tr>`;
+        } else {
+            matchedStudents.forEach(student => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${student.studentId || '-'}</td>
+                    <td>${student.name || '-'}</td>
+                    <td>${student.college || '-'}</td>
+                    <td>${student.collegeName || '-'}</td>
+                    <td>${student.major || '-'}</td>
+                    <td>${student.majorName || '-'}</td>
+                    <td>${student.className || '-'}</td>
+                    <td>${student.grade || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    }
+</script>
+
+</body>
+</html>
