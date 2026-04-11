@@ -3,123 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>精确 IP 地理位置查询 - IPv4 版</title>
+    <title>IPv4 地址查询工具</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        #map { height: 350px; border-radius: 12px; z-index: 1; }
-        .loading-dot { animation: blink 1.4s infinite both; }
-        @keyframes blink { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; } }
+        #map { height: 380px; border-radius: 1rem; z-index: 1; }
+        .info-card { transition: all 0.3s ease; }
+        .info-card:hover { transform: translateY(-2px); }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-900">
+<body class="bg-gray-50 min-h-screen font-sans">
 
-    <div class="max-w-5xl mx-auto px-4 py-12">
-        <!-- 头部 -->
-        <header class="text-center mb-12">
-            <h1 class="text-4xl font-extrabold tracking-tight text-slate-800 mb-2">📍 IP 地理位置查询</h1>
-            <p class="text-slate-500">检测您的 IPv4 地址及详细地理位置信息</p>
+    <div class="max-w-5xl mx-auto px-4 py-10">
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">📍 我的公网 IP 信息</h1>
+            <p class="mt-3 text-gray-600 font-medium">强制 IPv4 检测 · 实时地理位置</p>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- 左侧面板：详情 -->
-            <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">当前网络地址</h2>
-                    <div id="ip-display" class="text-2xl font-bold mono text-blue-600 break-all leading-tight">
-                        <span class="loading-dot">查询中...</span>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- 数据显示栏 -->
+            <div class="lg:col-span-1 space-y-4">
+                <!-- IP 地址卡片 -->
+                <div class="bg-blue-600 p-6 rounded-2xl shadow-lg text-white info-card">
+                    <p class="text-blue-100 text-xs uppercase font-bold tracking-wider mb-1">当前 IPv4 地址</p>
+                    <p id="ip-val" class="text-2xl font-mono font-bold italic">获取中...</p>
+                </div>
+
+                <!-- 详细信息卡片 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-5 info-card">
+                    <div>
+                        <p class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">国家 / 城市</p>
+                        <p id="loc-val" class="text-gray-800 font-semibold text-lg">加载中...</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">经纬度坐标</p>
+                        <p id="geo-val" class="text-gray-800 font-mono text-base">-</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">运营商信息 (ISP)</p>
+                        <p id="isp-val" class="text-gray-800 font-medium text-base">-</p>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                    <div>
-                        <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-1">国家 / 城市</h2>
-                        <p id="location-display" class="text-lg font-medium text-slate-800">-</p>
-                    </div>
-                    <div>
-                        <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-1">经纬度坐标</h2>
-                        <p id="coords-display" class="text-lg font-medium text-slate-800">-</p>
-                    </div>
-                    <div>
-                        <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-1">运营商 / ISP</h2>
-                        <p id="isp-display" class="text-lg font-medium text-slate-800">-</p>
-                    </div>
-                    <div>
-                        <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-1">时区</h2>
-                        <p id="tz-display" class="text-lg font-medium text-slate-800">-</p>
-                    </div>
-                </div>
-
-                <!-- 提示 -->
-                <div id="proxy-warning" class="hidden bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-700 text-sm">
-                    ⚠️ <b>检测到位置异常？</b> 如果您在中国但显示为美国，通常是因为您开启了 VPN 或代理工具。请尝试关闭它们并刷新页面。
+                <!-- 代理提醒 -->
+                <div id="proxy-note" class="hidden bg-orange-50 border border-orange-200 p-4 rounded-xl">
+                    <p class="text-orange-700 text-sm italic">
+                        <b>提示：</b> 检测到您当前 IP 不在中国。如果您身处国内，请关闭 VPN 或代理插件后刷新页面以获取真实位置。
+                    </p>
                 </div>
             </div>
 
-            <!-- 右侧面板：地图 -->
+            <!-- 地图栏 -->
             <div class="lg:col-span-2">
-                <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
+                <div class="bg-white p-2 rounded-3xl shadow-sm border border-gray-100">
                     <div id="map"></div>
                 </div>
             </div>
         </div>
+
+        <footer class="mt-10 text-center text-gray-400 text-xs">
+            <p>数据源: api4.ipify.org & freeipapi.com | 仅供参考</p>
+        </footer>
     </div>
 
     <script>
-        // 初始化地图
-        const map = L.map('map').setView([20, 0], 2);
-        L.tileLayer('https://{s}.tile.pdt.xyz/maptiles/osm/{z}/{x}/{y}.png' || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        // 1. 初始化地图 (默认中心点北京)
+        const map = L.map('map').setView([39.9, 116.4], 4);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap'
         }).addTo(map);
         let marker;
 
-        async function fetchIPData() {
+        async function fetchInfo() {
             try {
-                // 第一步：强制获取 IPv4 地址
-                // 使用 api4.ipify.org 强制只获取 IPv4
+                // 第一步：获取 IPv4 地址 (使用只支持 IPv4 的解析服务)
                 const ipRes = await fetch('https://api4.ipify.org?format=json');
-                const ipData = await ipRes.json();
-                const ipv4 = ipData.ip;
+                const { ip } = await ipRes.json();
+                document.getElementById('ip-val').innerText = ip;
 
-                // 第二步：根据获取到的 IPv4 查询地理位置
-                // 使用 ipwho.is (对中国 IP 的识别度较高，且支持 HTTPS)
-                const geoRes = await fetch(`https://ipwho.is/${ipv4}?lang=zh-CN`);
+                // 第二步：获取地理位置 (使用对 CORS 友好的 freeipapi)
+                const geoRes = await fetch(`https://freeipapi.com/api/json/${ip}`);
                 const data = await geoRes.json();
 
-                if (!data.success) throw new Error(data.message);
+                // 第三步：填充数据
+                // 转换国家代码 (简单演示)
+                const country = data.countryName === 'China' ? '中国' : data.countryName;
+                document.getElementById('loc-val').innerText = `${country} · ${data.regionName} · ${data.cityName}`;
+                document.getElementById('geo-val').innerText = `${data.latitude}, ${data.longitude}`;
+                
+                // 部分 API 不提供 ISP，这里尝试显示时区或补充信息
+                document.getElementById('isp-val').innerText = data.zipCode ? `邮编: ${data.zipCode}` : "暂无运营商数据";
 
-                // 第三步：更新 UI
-                document.getElementById('ip-display').innerText = data.ip;
-                document.getElementById('location-display').innerText = `${data.country} · ${data.region} · ${data.city}`;
-                document.getElementById('coords-display').innerText = `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`;
-                document.getElementById('isp-display').innerText = data.connection.isp;
-                document.getElementById('tz-display').innerText = data.timezone.utc + " " + data.timezone.id;
-
-                // 判断是否可能开启了代理
-                if (data.country_code !== 'CN') {
-                    document.getElementById('proxy-warning').classList.remove('hidden');
+                // 第四步：判断地理位置提醒
+                if (data.countryCode !== 'CN') {
+                    document.getElementById('proxy-note').classList.remove('hidden');
                 }
 
-                // 第四步：更新地图
+                // 第五步：更新地图
                 const lat = data.latitude;
                 const lon = data.longitude;
-                map.setView([lat, lon], 11);
+                map.setView([lat, lon], 12);
                 if (marker) map.removeLayer(marker);
                 marker = L.marker([lat, lon]).addTo(map)
-                    .bindPopup(`<b>当前位置</b><br>${data.city}`)
+                    .bindPopup(`您的 IP 位置: ${data.cityName}`)
                     .openPopup();
 
-            } catch (error) {
-                console.error('Fetch Error:', error);
-                document.getElementById('ip-display').innerHTML = '<span class="text-red-500 text-base">获取失败，请检查网络连接</span>';
+            } catch (err) {
+                console.error("查询失败:", err);
+                document.getElementById('ip-val').innerText = "获取失败";
+                document.getElementById('loc-val').innerText = "请检查网络或刷新页面";
             }
         }
 
-        window.onload = fetchIPData;
+        window.onload = fetchInfo;
     </script>
 </body>
 </html>
