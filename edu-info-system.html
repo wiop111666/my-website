@@ -44,7 +44,6 @@
             <header class="mb-6"><h1 class="text-2xl font-extrabold text-slate-900 tracking-tight text-center">数据中心</h1></header>
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div class="stat-card p-5 rounded-[2rem] border border-white shadow-sm"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">全校总人数</p><p class="text-3xl font-black mt-1 text-slate-900 tracking-tighter">{{ totalStudents }}<span class="text-xs font-normal text-slate-400 ml-1">人</span></p></div>
-                <div class="stat-card p-5 rounded-[2rem] border border-white shadow-sm"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-blue-600">今日有课班级</p><p class="text-3xl font-black mt-1 text-blue-600 tracking-tighter">{{ activeClassesCount }}<span class="text-xs font-normal text-slate-400 ml-1">个</span></p></div>
             </div>
             <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-50 mb-6">
                 <h3 class="text-sm font-black mb-6 flex items-center"><span class="w-1.5 h-4 bg-blue-600 rounded mr-2.5"></span>学院人数占比</h3>
@@ -68,9 +67,6 @@ createApp({
         const activeTab = ref('class');
         const classMeta = shallowRef([]);
         const loading = ref(true);
-        const currentTime = ref(new Date());
-        const realTodayZero = new Date(new Date().setHours(0,0,0,0));
-        const selectedDate = ref(realTodayZero);
         const classFilter = ref({ college: '', entry_year: '', major: '', class_name: '' });
         const navItems = [
             { id: 'class', name: '班级数据', icon: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>' },
@@ -107,21 +103,9 @@ createApp({
             setInterval(() => currentTime.value = new Date(), 60000);
         });
         return {
-            activeTab, navItems, loading, currentTime, selectedDate,
+            activeTab, navItems, loading, 
             classFilter, classColleges, classYears, classMajors, classClasses, currentClassMeta,
             totalStudents, collegeStats,
-            activeWeek: computed(() => Math.floor(Math.round((selectedDate.value.getTime() - START_DATE.getTime()) / (24 * 3600 * 1000)) / 7) + 1),
-            activeDayName: computed(() => ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][selectedDate.value.getDay()]),
-            currentTimeStr: computed(() => currentTime.value.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })),
-            isSelectedToday: computed(() => selectedDate.value.toDateString() === realTodayZero.toDateString()),
-            dateTabs: computed(() => {
-                const tabs = [];
-                for (let i = 0; i < 7; i++) {
-                    const d = new Date(realTodayZero); d.setDate(realTodayZero.getDate() + i);
-                    tabs.push({ fullDate: d, dateNum: d.getDate(), dayName: i === 0 ? '今天' : ['日','一','二','三','四','五','六'][d.getDay()] });
-                }
-                return tabs;
-            })
         };
     }
 }).mount('#app');
