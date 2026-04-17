@@ -21,9 +21,9 @@
         
         <!-- ================= 视图 1: 班级数据 ================= -->
         <div v-if="activeTab === 'class'">
-            <header class="mb-4 text-center"><h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">班级名录</h1></header>
+            <header class="mb-4 text-center"><h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">班级数据</h1></header>
             <div class="mb-6 p-4 bg-blue-50 rounded-2xl text-center border border-blue-100 shadow-sm shadow-blue-50">
-                <a href="https://wiop111666.github.io/my-website/student-search.html" target="_blank" class="text-blue-600 font-bold text-sm underline flex items-center justify-center">想要根据姓名查询信息? 请点击这里<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg></a>
+                <a href="https://isjavacoder.github.io/website/student-search.html" target="_blank" class="text-blue-600 font-bold text-sm underline flex items-center justify-center">想要根据姓名查询信息? 请点击这里<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg></a>
             </div>
             <section class="glass rounded-3xl p-4 space-y-3 mb-6 shadow-sm">
                 <select v-model="classFilter.college" class="w-full bg-white border border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold shadow-sm outline-none"><option value="">选择学院</option><option v-for="item in classColleges" :value="item">{{ item }}</option></select>
@@ -41,7 +41,7 @@
 
         <!-- ================= 视图 2: 仪表盘 ================= -->
         <div v-if="activeTab === 'dashboard'">
-            <header class="mb-6"><h1 class="text-2xl font-extrabold text-slate-900 tracking-tight text-center">数据中心</h1></header>
+            <header class="mb-6"><h1 class="text-2xl font-extrabold text-slate-900 tracking-tight text-center">学院数据</h1></header>
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div class="stat-card p-5 rounded-[2rem] border border-white shadow-sm"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">全校总人数</p><p class="text-3xl font-black mt-1 text-slate-900 tracking-tighter">{{ totalStudents }}<span class="text-xs font-normal text-slate-400 ml-1">人</span></p></div>
             </div>
