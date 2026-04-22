@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开学周数查询</title>
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+        h1 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .week-number {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #007AFF;
+            margin: 10px 0;
+        }
+        .info {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .date-highlight {
+            color: #333;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>📅 当前教学周</h1>
+    <div id="display-area">
+        <div class="week-number" id="week-count">-</div>
+        <div class="info">
+            <p>今天是：<span id="current-date" class="date-highlight">-</span></p>
+            <p>入学日期：<span id="start-date" class="date-highlight">-</span></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ================= 配置区域 =================
+    // 请在这里修改你的入学日期 (格式: YYYY-MM-DD)
+    // 注意：通常建议设置为开学那一周的周一
+    const CONFIG_START_DATE = "2026-03-09"; 
+    // ===========================================
+
+    function calculateWeek() {
+        const now = new Date();
+        const startDate = new Date(CONFIG_START_DATE);
+
+        // 设置时间为当天的 00:00:00 确保计算准确
+        now.setHours(0, 0, 0, 0);
+        startDate.setHours(0, 0, 0, 0);
+
+        // 计算日期差（毫秒）
+        const diffInMs = now - startDate;
+        // 转换为天数
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+        
+        let weekResult;
+        
+        if (diffInDays < 0) {
+            weekResult = "尚未开学";
+        } else {
+            const weekNum = Math.floor(diffInDays / 7) + 1;
+            weekResult = `第 ${weekNum} 周`;
+        }
+
+        // 渲染到页面
+        document.getElementById('week-count').innerText = weekResult;
+        document.getElementById('current-date').innerText = now.toLocaleDateString();
+        document.getElementById('start-date').innerText = startDate.toLocaleDateString();
+    }
+
+    // 执行计算
+    calculateWeek();
+</script>
+
+</body>
+</html>
