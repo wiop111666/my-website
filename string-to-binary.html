@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>字符串编码转二进制工具</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #dcdfe6;
+            --error-color: #ff4d4f;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 24px;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .output-box {
+            background-color: #2b2b2b;
+            color: #a9b7c6;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 15px;
+            border-radius: 6px;
+            min-height: 120px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            transition: color 0.3s;
+        }
+
+        /* 错误提示样式 */
+        .output-error {
+            color: var(--error-color) !important;
+            font-weight: bold;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 16px;
+            background-color: #e8f5e9;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .stats span {
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+    </style>
+
+    <!-- 临时移除原生 TextEncoder 以强制加载支持所有编码的 Polyfill -->
+    <script>
+        window.NativeTextEncoder = window.TextEncoder;
+        window.TextEncoder = undefined;
+    </script>
+    
+    <!-- 引入支持 GBK/GB2312 的 Polyfill 库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/text-encoding/0.7.0/encoding-indexes.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/text-encoding/0.7.0/encoding.min.js"></script>
+    
+    <!-- 恢复并保存 Polyfill 版本 -->
+    <script>
+        window.PolyfillTextEncoder = window.TextEncoder;
+        window.TextEncoder = window.NativeTextEncoder || window.TextEncoder;
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <h1>字符串编码转二进制工具</h1>
+
+    <div class="form-group">
+        <label for="inputText">输入文本：</label>
+        <textarea id="inputText" placeholder="在此输入需要转换的字符..."></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="encodingSelect">选择编码方式：</label>
+        <select id="encodingSelect">
+            <option value="UTF-8" selected>UTF-8</option>
+            <option value="ASCII">ASCII</option>
+            <option value="GBK">GBK</option>
+            <option value="GB2312">GB2312</option>
+            <option value="UTF-16BE">UTF-16 (大端 / Big Endian)</option>
+            <option value="UTF-32BE">UTF-32 (大端 / Big Endian)</option>
+        </select>
+        <div class="note">* 注：GBK 和 GB2312 的转换依赖网络加载映射表。UTF-16和UTF-32采用标准网络字节序(大端)。</div>
+    </div>
+
+    <div class="form-group">
+        <label>二进制表示形式 (每字节 8 位)：</label>
+        <div id="binaryOutput" class="output-box"></div>
+    </div>
+
+    <div class="stats">
+        <div>总字节数: <span id="byteCount">0</span> Bytes</div>
+    </div>
+</div>
+
+<script>
+    const inputText = document.getElementById('inputText');
+    const encodingSelect = document.getElementById('encodingSelect');
+    const binaryOutput = document.getElementById('binaryOutput');
+    const byteCount = document.getElementById('byteCount');
+
+    inputText.addEventListener('input', updateOutput);
+    encodingSelect.addEventListener('change', updateOutput);
+
+    function updateOutput() {
+        const text = inputText.value;
+        const encoding = encodingSelect.value;
+
+        if (!text) {
+            binaryOutput.innerText = '';
+            binaryOutput.classList.remove('output-error');
+            byteCount.innerText = '0';
+            return;
+        }
+
+        let byteArray;
+
+        try {
+            switch (encoding) {
+                case 'ASCII':
+                    byteArray = encodeASCII(text);
+                    break;
+                case 'UTF-8':
+                    byteArray = encodeUTF8(text);
+                    break;
+                case 'UTF-16BE':
+                    byteArray = encodeUTF16BE(text);
+                    break;
+                case 'UTF-32BE':
+                    byteArray = encodeUTF32BE(text);
+                    break;
+                case 'GBK':
+                case 'GB2312':
+                    byteArray = encodeLegacy(text, encoding);
+                    break;
+            }
+
+            // 成功状态：恢复默认颜色，并显示二进制转换结果
+            binaryOutput.classList.remove('output-error');
+            const binaryString = Array.from(byteArray)
+                .map(byte => byte.toString(2).padStart(8, '0'))
+                .join(' ');
+            
+            binaryOutput.innerText = binaryString;
+            byteCount.innerText = byteArray.length;
+
+        } catch (err) {
+            // 失败状态：显示红色错误提示并清零字节数
+            binaryOutput.classList.add('output-error');
+            binaryOutput.innerText = err.message || "转换出错，请检查输入或网络连接状态。";
+            byteCount.innerText = '0';
+        }
+    }
+
+    // 1. ASCII 编码 (严格校验，遇到非 ASCII 字符抛出异常)
+    function encodeASCII(str) {
+        let bytes = [];
+        for (let i = 0; i < str.length; i++) {
+            let code = str.charCodeAt(i);
+            // ASCII 标准范围是 0 - 127
+            if (code > 127) {
+                throw new Error(`编码失败：字符 "${str[i]}" 不合法！ASCII 编码只能表示范围在 0-127 内的字符。`);
+            }
+            bytes.push(code);
+        }
+        return new Uint8Array(bytes);
+    }
+
+    // 2. UTF-8 编码
+    function encodeUTF8(str) {
+        return new TextEncoder().encode(str);
+    }
+
+    // 3. UTF-16 BE (大端)
+    function encodeUTF16BE(str) {
+        let bytes = [];
+        for (let i = 0; i < str.length; i++) {
+            let code = str.charCodeAt(i);
+            bytes.push((code >> 8) & 0xFF); 
+            bytes.push(code & 0xFF);        
+        }
+        return new Uint8Array(bytes);
+    }
+
+    // 4. UTF-32 BE (大端)
+    function encodeUTF32BE(str) {
+        let bytes = [];
+        for (let char of str) {
+            let code = char.codePointAt(0);
+            bytes.push((code >> 24) & 0xFF);
+            bytes.push((code >> 16) & 0xFF);
+            bytes.push((code >> 8) & 0xFF);
+            bytes.push(code & 0xFF);
+        }
+        return new Uint8Array(bytes);
+    }
+
+    // 5. GBK / GB2312
+    function encodeLegacy(str, charset) {
+        if (!window.PolyfillTextEncoder) {
+            throw new Error("无法加载编码库，请确保网络畅通。");
+        }
+        const encoder = new window.PolyfillTextEncoder(charset.toLowerCase(), { NONSTANDARD_allowLegacyEncoding: true });
+        return encoder.encode(str);
+    }
+</script>
+
+</body>
+</html>
