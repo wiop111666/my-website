@@ -3,137 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>智慧课表极简版</title>
+    <title>智慧课表 - 移动端</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        body { 
+            font-family: 'Noto Sans SC', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+            background-color: #fcfcfd;
+        }
+        .glass { 
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+        }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .course-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .course-card:active { transform: scale(0.96); opacity: 0.8; }
+        .course-card { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .course-card:active { transform: scale(0.97); }
         
         @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
-        .animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
+        .animate-item { animation: slideUp 0.4s ease-out forwards; }
         
-        /* 这种颜色组合显得高级 */
-        .bg-main { background-color: #f8fafc; }
-        .accent-blue { background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%); }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 4px;
+            background-color: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
-<body class="bg-main text-slate-900">
+<body class="text-slate-900 text-[15px]">
     <div id="app" v-cloak>
-        <!-- 顶部导航 -->
-        <header class="sticky top-0 z-40 glass border-b border-white/20 px-5 py-4">
-            <div class="flex justify-between items-center mb-4">
+        <!-- 顶部信息与导航 -->
+        <header class="sticky top-0 z-40 glass border-b border-slate-100 px-5 pt-4 pb-3">
+            <div class="flex justify-between items-start mb-3">
                 <div>
-                    <h1 class="text-2xl font-bold tracking-tight text-slate-800">今日课表</h1>
-                    <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{{ todayStr }} · 第 {{ currentWeek }} 周</p>
+                    <h1 class="text-2xl font-black text-slate-900 tracking-tight">我的课表</h1>
+                    <div class="flex flex-col gap-0.5 mt-1">
+                        <span class="text-[10px] text-slate-400 font-medium tracking-wide uppercase">
+                            数据更新：2026-04-25
+                        </span>
+                        <span class="text-[10px] text-blue-500 font-bold tracking-wide uppercase">
+                            作者：申威
+                        </span>
+                    </div>
                 </div>
-                <div class="flex bg-slate-200/50 p-1 rounded-xl">
-                    <button @click="isRealTime = true" :class="isRealTime ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500'" class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all">实时</button>
-                    <button @click="isRealTime = false" :class="!isRealTime ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500'" class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all">当天</button>
+                <div class="flex bg-slate-100 p-1 rounded-xl">
+                    <button @click="isRealTime = true" :class="isRealTime ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'" class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all">实时</button>
+                    <button @click="isRealTime = false" :class="!isRealTime ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'" class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all">全天</button>
                 </div>
             </div>
 
-            <!-- 级联筛选区域 -->
-            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+            <!-- 筛选器 -->
+            <div class="flex gap-2 overflow-x-auto no-scrollbar py-2">
                 <div v-for="(label, key) in filterLabels" :key="key" class="flex-shrink-0">
-                    <select v-model="selected[key]" class="appearance-none bg-white border border-slate-100 px-4 py-2 rounded-full text-xs font-medium shadow-sm focus:outline-none focus:ring-2 ring-blue-100">
-                        <option :value="null">所有{{ label }}</option>
-                        <option v-for="opt in getOptions(key)" :key="opt" :value="opt">{{ opt }}</option>
-                    </select>
+                    <div class="relative">
+                        <select v-model="selected[key]" class="appearance-none bg-slate-50 border border-slate-100 pl-3 pr-8 py-2 rounded-xl text-xs font-bold text-slate-600 focus:outline-none focus:ring-2 ring-blue-100">
+                            <option :value="null">全部{{ label }}</option>
+                            <option v-for="opt in getOptions(key)" :key="opt" :value="opt">{{ opt }}</option>
+                        </select>
+                        <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-[10px]">▼</div>
+                    </div>
                 </div>
             </div>
         </header>
 
-        <main class="px-5 py-6 space-y-4">
-            <!-- 无数据展示 -->
-            <div v-if="displayCourses.length === 0" class="flex flex-col items-center justify-center py-20 text-center">
-                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                    <span class="text-2xl">☕</span>
+        <main class="px-5 py-6">
+            <!-- 统计与日期展示 -->
+            <div class="mb-6 flex justify-between items-end">
+                <div>
+                    <span class="text-3xl font-bold text-slate-800">{{ todayDay }}</span>
+                    <span class="text-sm text-slate-400 ml-2 font-medium">{{ todayMonth }} / 第{{ currentWeek }}周</span>
                 </div>
-                <p class="text-slate-400 text-sm">{{ isRealTime ? '当前时间没有正在进行的课程' : '今天后面没有课啦，休息一下吧' }}</p>
+                <div v-if="isRealTime" class="flex items-center text-xs font-bold text-emerald-500 bg-emerald-50 px-3 py-1 rounded-full">
+                    <span class="status-dot"></span> 实时监测中
+                </div>
             </div>
 
-            <!-- 课程卡片 -->
-            <div 
-                v-for="(course, idx) in displayCourses" 
-                :key="idx" 
-                @click="openDetail(course)"
-                class="course-card relative overflow-hidden bg-white rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-50"
-            >
-                <!-- 装饰条 -->
-                <div class="absolute left-0 top-0 bottom-0 w-1.5 accent-blue"></div>
-                
-                <div class="flex justify-between items-start mb-4">
-                    <div class="space-y-1">
-                        <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded-md">{{ course.entry_year }}</span>
-                            <span class="text-[10px] text-slate-400 font-medium">{{ course.class_name }}</span>
-                        </div>
-                        <h2 class="text-lg font-bold text-slate-800 leading-tight">{{ course.course_name }}</h2>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm font-bold text-blue-600">{{ course.matchedSchedule.period }}</p>
-                        <p class="text-[10px] text-slate-400 uppercase">{{ course.matchedSchedule.day }}</p>
-                    </div>
+            <!-- 课程列表 -->
+            <div class="space-y-4">
+                <div v-if="displayCourses.length === 0" class="flex flex-col items-center justify-center py-24 text-center">
+                    <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-3xl">🎐</div>
+                    <p class="text-slate-400 font-medium">暂时没有查找到课程</p>
+                    <p class="text-[11px] text-slate-300 mt-1">切换到“全天”模式或更改筛选条件试试</p>
                 </div>
 
-                <div class="flex items-center justify-between mt-6 pt-4 border-t border-slate-50">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs">👤</div>
-                        <span class="text-sm font-medium text-slate-600">{{ course.teacher }}</span>
+                <div 
+                    v-for="(course, idx) in displayCourses" 
+                    :key="idx" 
+                    @click="openDetail(course)"
+                    class="course-card animate-item bg-white rounded-[28px] p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.03)] border border-slate-50 relative overflow-hidden"
+                >
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1 pr-4">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-black text-blue-600 px-2 py-0.5 bg-blue-50 rounded-lg uppercase tracking-tighter">{{ course.entry_year }}</span>
+                                <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{{ course.class_name }}</span>
+                            </div>
+                            <h2 class="text-lg font-bold text-slate-800 leading-tight mb-1">{{ course.course_name }}</h2>
+                            <p class="text-sm font-medium text-slate-500">👤 {{ course.teacher }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-base font-black text-slate-900 tracking-tighter">{{ course.matchedSchedule.period }}</p>
+                            <p class="text-[10px] font-bold text-slate-400">{{ getRealTimeRange(course.matchedSchedule.period) }}</p>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-1 text-slate-400">
-                        <span class="text-[10px] truncate max-w-[120px]">📍 {{ course.matchedSchedule.location }}</span>
+
+                    <div class="flex items-center gap-2 mt-4 pt-4 border-t border-slate-50">
+                        <div class="w-7 h-7 rounded-full bg-slate-900 flex items-center justify-center text-[10px] text-white">📍</div>
+                        <span class="text-xs font-bold text-slate-600">{{ course.matchedSchedule.location }}</span>
                     </div>
                 </div>
             </div>
         </main>
 
         <!-- 详情弹窗 -->
-        <div v-if="detailItem" class="fixed inset-0 z-50 flex items-end">
-            <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="detailItem = null"></div>
-            <div class="relative w-full bg-white rounded-t-[40px] p-8 shadow-2xl animate-slide-up overflow-y-auto max-h-[90vh]">
-                <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-8"></div>
-                
-                <h3 class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-2">{{ detailItem.college }} · {{ detailItem.major }}</h3>
-                <h2 class="text-2xl font-bold text-slate-900 mb-6">{{ detailItem.course_name }}</h2>
+        <transition name="slide">
+            <div v-if="detailItem" class="fixed inset-0 z-50 flex items-end">
+                <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="detailItem = null"></div>
+                <div class="relative w-full bg-white rounded-t-[40px] p-8 animate-slide-up shadow-2xl">
+                    <div class="w-12 h-1.5 bg-slate-100 rounded-full mx-auto mb-8"></div>
+                    
+                    <div class="mb-8 text-center">
+                        <p class="text-[10px] font-bold text-blue-500 uppercase tracking-[0.2em] mb-2">{{ detailItem.college }} · {{ detailItem.major }}</p>
+                        <h2 class="text-2xl font-black text-slate-900">{{ detailItem.course_name }}</h2>
+                    </div>
 
-                <div class="grid grid-cols-2 gap-4 mb-8">
-                    <div class="bg-slate-50 p-4 rounded-2xl">
-                        <p class="text-[10px] text-slate-400 font-bold mb-1 uppercase">学分</p>
-                        <p class="text-lg font-bold text-slate-700">{{ detailItem.credits }} Credits</p>
+                    <div class="grid grid-cols-2 gap-3 mb-8">
+                        <div class="bg-slate-50 p-4 rounded-3xl border border-slate-100/50 text-center">
+                            <p class="text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-widest">学分</p>
+                            <p class="text-xl font-black text-slate-800">{{ detailItem.credits }}</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-3xl border border-slate-100/50 text-center">
+                            <p class="text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-widest">总学时</p>
+                            <p class="text-xl font-black text-slate-800">{{ detailItem.total_hours }}</p>
+                        </div>
                     </div>
-                    <div class="bg-slate-50 p-4 rounded-2xl">
-                        <p class="text-[10px] text-slate-400 font-bold mb-1 uppercase">总学时</p>
-                        <p class="text-lg font-bold text-slate-700">{{ detailItem.total_hours }} Hours</p>
-                    </div>
-                </div>
 
-                <div class="space-y-4">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">排课详情</p>
-                    <div v-for="(sc, i) in detailItem.schedule" :key="i" class="flex items-center gap-4 p-4 rounded-2xl border border-slate-100">
-                        <div class="flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-blue-50 text-blue-600">
-                            <span class="text-[10px] font-bold">{{ sc.day.replace('星期','') }}</span>
-                            <span class="text-xs font-black">{{ sc.period.split('-')[0] }}</span>
+                    <div class="space-y-3 overflow-y-auto max-h-60 no-scrollbar">
+                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest px-2">课程安排</p>
+                        <div v-for="(sc, i) in detailItem.schedule" :key="i" 
+                             :class="isScheduleCurrent(sc, true) ? 'bg-blue-50 border-blue-100' : 'bg-white border-slate-100'"
+                             class="flex items-center gap-4 p-4 rounded-[20px] border">
+                            <div class="flex flex-col items-center justify-center w-12 h-12 rounded-2xl" :class="isScheduleCurrent(sc, true) ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'">
+                                <span class="text-[10px] font-bold">{{ sc.day.slice(-1) }}</span>
+                                <span class="text-xs font-black">{{ sc.period.split('-')[0] }}</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-bold text-slate-700">{{ sc.location }}</p>
+                                <p class="text-[10px] font-medium text-slate-400 mt-0.5">{{ sc.weeks }}</p>
+                            </div>
                         </div>
-                        <div class="flex-1">
-                            <p class="text-sm font-bold text-slate-700">{{ sc.location }}</p>
-                            <p class="text-xs text-slate-400">{{ sc.weeks }}</p>
-                        </div>
-                        <div v-if="isScheduleCurrent(sc)" class="px-2 py-1 bg-green-100 text-green-600 text-[10px] font-bold rounded-md">进行中</div>
                     </div>
+                    
+                    <button @click="detailItem = null" class="w-full mt-8 py-4 bg-slate-900 text-white rounded-[20px] font-bold text-sm">点击返回</button>
                 </div>
-                
-                <button @click="detailItem = null" class="w-full mt-8 py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-lg shadow-slate-200">关闭详情</button>
             </div>
-        </div>
+        </transition>
     </div>
 
     <script>
@@ -144,7 +183,7 @@
                 const courses = ref([]);
                 const isRealTime = ref(true);
                 const detailItem = ref(null);
-                const currentWeek = ref(7); // 假设当前是第7周，实际可动态计算
+                const currentWeek = ref(7); // 示例设为第7周
                 
                 const filterLabels = {
                     college: '学院',
@@ -160,63 +199,70 @@
                     class_name: null
                 });
 
-                // 时间段映射 (根据学校实际情况修改)
-                const periodMap = {
-                    "1-2节": ["08:30", "10:10"],
-                    "3-4节": ["10:30", "12:10"],
+                // 你提供的时间映射
+                const periodTimeMap = {
+                    "1-2节": ["08:10", "09:50"],
+                    "3-4节": ["10:20", "12:00"],
                     "5-6节": ["14:00", "15:40"],
-                    "7-8节": ["16:00", "17:40"],
+                    "7-8节": ["16:10", "17:50"],
                     "9-10节": ["19:00", "20:40"]
                 };
 
-                const todayStr = computed(() => {
-                    return new Date().toLocaleDateString('zh-CN', { weekday: 'long', month: 'long', day: 'numeric' });
-                });
+                const todayDay = new Date().getDate();
+                const todayMonth = new Date().toLocaleDateString('zh-CN', { month: 'long' });
 
                 const getOptions = (key) => {
                     const set = new Set(courses.value.map(c => c[key]));
-                    return Array.from(set).sort();
+                    return Array.from(set).filter(v => v).sort();
                 };
 
                 const parseWeeks = (weekStr) => {
                     const result = [];
                     const parts = weekStr.split(',');
                     parts.forEach(p => {
-                        if (p.includes('-')) {
-                            const [start, end] = p.replace('周', '').split('-').map(Number);
+                        const cleanStr = p.replace('周', '');
+                        if (cleanStr.includes('-')) {
+                            const [start, end] = cleanStr.split('-').map(Number);
                             for (let i = start; i <= end; i++) result.push(i);
                         } else {
-                            result.push(parseInt(p.replace('周', '')));
+                            result.push(parseInt(cleanStr));
                         }
                     });
                     return result;
                 };
 
-                const isScheduleCurrent = (sc) => {
+                const isScheduleCurrent = (sc, checkOnlyDayAndWeek = false) => {
                     const now = new Date();
                     const dayNames = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
                     const todayName = dayNames[now.getDay()];
                     
                     if (sc.day !== todayName) return false;
                     
-                    // 周数判断
                     const weeks = parseWeeks(sc.weeks);
                     if (!weeks.includes(currentWeek.value)) return false;
 
-                    // 时间判断 (仅限实时模式)
+                    if (checkOnlyDayAndWeek) return true;
+
+                    // 实时逻辑
                     if (isRealTime.value) {
-                        const time = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-                        const range = periodMap[sc.period];
+                        const currentTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+                        const range = periodTimeMap[sc.period];
                         if (range) {
-                            return time >= range[0] && time <= range[1];
+                            return currentTime >= range[0] && currentTime <= range[1];
                         }
+                        return false;
                     }
                     return true;
                 };
 
+                const getRealTimeRange = (period) => {
+                    return periodTimeMap[period] ? periodTimeMap[period].join(' - ') : '';
+                };
+
                 const displayCourses = computed(() => {
+                    const now = new Date();
                     const dayNames = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-                    const todayName = dayNames[new Date().getDay()];
+                    const todayName = dayNames[now.getDay()];
 
                     return courses.value.filter(c => {
                         // 1. 基础筛选
@@ -224,20 +270,11 @@
                             if (selected.value[key] && c[key] !== selected.value[key]) return false;
                         }
 
-                        // 2. 时间逻辑筛选
-                        const matchedSc = c.schedule.find(sc => {
-                            const weekMatch = parseWeeks(sc.weeks).includes(currentWeek.value);
-                            const dayMatch = sc.day === todayName;
-                            
-                            if (isRealTime.value) {
-                                return dayMatch && weekMatch && isScheduleCurrent(sc);
-                            } else {
-                                return dayMatch && weekMatch;
-                            }
-                        });
+                        // 2. 时间匹配
+                        const matchedSc = c.schedule.find(sc => isScheduleCurrent(sc));
 
                         if (matchedSc) {
-                            c.matchedSchedule = matchedSc; // 临时绑定用于显示
+                            c.matchedSchedule = matchedSc; 
                             return true;
                         }
                         return false;
@@ -252,18 +289,16 @@
                     try {
                         const res = await fetch('class_courses.json');
                         const data = await res.json();
-                        // 如果json是对象数组直接赋值，如果是包装过的则根据结构取值
                         courses.value = Array.isArray(data) ? data : (data.courses || []);
                     } catch (e) {
-                        console.error("加载数据失败，请检查同级目录下是否存在 class_courses.json", e);
-                        // 测试数据
-                        courses.value = []; 
+                        console.error("加载数据失败", e);
                     }
                 });
 
                 return {
                     courses, isRealTime, selected, filterLabels, displayCourses, 
-                    detailItem, todayStr, currentWeek, getOptions, openDetail, isScheduleCurrent
+                    detailItem, todayDay, todayMonth, currentWeek, 
+                    getOptions, openDetail, isScheduleCurrent, getRealTimeRange
                 };
             }
         }).mount('#app');
