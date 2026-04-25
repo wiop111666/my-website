@@ -3,149 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学生名录系统</title>
-    <!-- 核心库引入 -->
+    <title>学生名录系统 - 专业版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <!-- 动画库 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    
     <style>
-        :root {
-            --primary: #6366f1;
-        }
-        body {
-            font-family: 'Noto Sans SC', sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            min-height: 100vh;
-            color: #1e293b;
-        }
-        /* 玻璃拟态效果 */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-        }
-        /* 卡片悬浮动画 */
-        .student-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .student-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-        /* 隐藏滚动条 */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* 列表过渡动画 */
-        .list-enter-active, .list-leave-active { transition: all 0.5s ease; }
-        .list-enter-from, .list-leave-to { opacity: 0; transform: translateY(30px); }
-
+        body { font-family: 'Noto Sans SC', sans-serif; background: #f1f5f9; color: #1e293b; }
+        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .student-card { transition: transform 0.2s; will-change: transform; }
+        .student-card:hover { transform: translateY(-4px); }
         [v-cloak] { display: none; }
+        /* 骨架屏动画 */
+        @keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        .loading-shimmer { animate: shimmer 1.5s infinite; }
     </style>
 </head>
-<body class="antialiased">
+<body>
 
-<div id="app" v-cloak class="p-4 md:p-10 max-w-7xl mx-auto">
-    <!-- 加载状态 -->
-    <div v-if="loading" class="fixed inset-0 flex items-center justify-center bg-white z-50">
-        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
-    </div>
-
-    <!-- 顶部标题区 -->
-    <header class="mb-10 animate__animated animate__fadeInDown">
-        <h1 class="text-4xl font-bold text-gray-900 tracking-tight mb-2">学生信息查询</h1>
-        <div class="h-1 w-20 bg-indigo-500 rounded-full"></div>
-    </header>
-
-    <!-- 筛选面板 -->
-    <div class="glass-panel rounded-3xl p-6 md:p-8 mb-10 animate__animated animate__fadeIn">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- 筛选组件 -->
-            <div v-for="(label, key) in filterLabels" :key="key" class="relative">
-                <label class="text-xs font-bold text-gray-400 uppercase ml-1 mb-2 block tracking-widest">{{ label }}</label>
-                <select v-model="filters[key]" 
-                        class="w-full appearance-none bg-white/50 border border-gray-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all cursor-pointer shadow-sm">
+<div id="app" v-cloak class="min-h-screen">
+    <!-- 顶部导航 -->
+    <nav class="sticky top-0 z-30 glass-panel shadow-sm px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <h1 class="text-xl font-bold text-indigo-600">学生数据管理 ({{ totalCount }})</h1>
+            
+            <div class="flex flex-wrap gap-2">
+                <select v-for="(label, key) in filterLabels" :key="key" v-model="filters[key]" 
+                        class="bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none min-w-[100px]">
                     <option value="">全部{{ label }}</option>
                     <option v-for="opt in getOptions(key)" :value="opt">{{ opt }}</option>
                 </select>
-                <div class="pointer-events-none absolute bottom-4 right-4 text-gray-400">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </div>
+                <button @click="resetFilters" class="px-3 py-1.5 text-xs bg-gray-200 hover:bg-gray-300 rounded-lg transition">重置</button>
             </div>
         </div>
+    </nav>
 
-        <!-- 统计与清除 -->
-        <div class="mt-8 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-gray-100 pt-6">
-            <div class="text-gray-500">
-                当前筛选：显示 <span class="text-indigo-600 font-bold text-lg">{{ filteredStudents.length }}</span> 位同学
-            </div>
-            <button @click="resetFilters" class="px-6 py-2 bg-indigo-50 text-indigo-600 rounded-full font-medium hover:bg-indigo-100 transition-colors">
-                重置所有筛选
-            </button>
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+        <!-- 统计信息 -->
+        <div class="mb-6 flex items-center justify-between text-sm text-gray-500">
+            <p v-if="!loading">找到 {{ filteredStudents.length }} 条结果</p>
+            <p v-else>正在加载海量数据...</p>
         </div>
-    </div>
 
-    <!-- 学生网格 -->
-    <transition-group name="list" tag="div" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <div v-for="s in filteredStudents" :key="s.studentId" class="student-card glass-panel rounded-3xl p-6 relative overflow-hidden">
-            <!-- 背景装饰 -->
-            <div class="absolute -right-4 -top-4 w-20 h-20 bg-indigo-50 rounded-full opacity-50"></div>
-            
-            <div class="flex items-start justify-between mb-6">
-                <div class="w-14 h-14 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-indigo-200">
-                    {{ s.name.charAt(0) }}
-                </div>
-                <span class="text-[10px] px-2 py-1 bg-gray-900 text-white rounded-lg font-bold tracking-tighter">
-                    {{ s.grade }} 级
-                </span>
-            </div>
+        <!-- 加载状态 -->
+        <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div v-for="i in 8" class="h-32 bg-white rounded-2xl loading-shimmer shadow-sm"></div>
+        </div>
 
-            <div class="space-y-4">
+        <!-- 学生列表 - 采用分批渲染 -->
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div v-for="s in displayedStudents" :key="s.studentId" 
+                 class="student-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col justify-between">
                 <div>
-                    <h3 class="text-xl font-bold text-gray-800">{{ s.name }}</h3>
-                    <p class="text-xs text-gray-400 font-mono mt-1">{{ s.studentId }}</p>
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold">
+                            {{ s.name.charAt(0) }}
+                        </div>
+                        <span class="text-[10px] text-gray-400 font-mono">{{ s.studentId }}</span>
+                    </div>
+                    <h3 class="text-lg font-bold mb-1">{{ s.name }}</h3>
+                    <div class="space-y-1 text-xs text-gray-500 italic">
+                        <p>{{ s.collegeName }}</p>
+                        <p>{{ s.majorName }}</p>
+                    </div>
                 </div>
-
-                <div class="space-y-2 pt-2">
-                    <div class="flex items-center text-sm">
-                        <div class="w-2 h-2 rounded-full bg-indigo-400 mr-3"></div>
-                        <span class="text-gray-400 w-12">学院</span>
-                        <span class="font-medium">{{ s.collegeName }}</span>
-                    </div>
-                    <div class="flex items-center text-sm">
-                        <div class="w-2 h-2 rounded-full bg-blue-400 mr-3"></div>
-                        <span class="text-gray-400 w-12">专业</span>
-                        <span class="font-medium">{{ s.majorName }}</span>
-                    </div>
-                    <div class="flex items-center text-sm">
-                        <div class="w-2 h-2 rounded-full bg-emerald-400 mr-3"></div>
-                        <span class="text-gray-400 w-12">班级</span>
-                        <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded text-xs font-bold">
-                            {{ s.className }}
-                        </span>
-                    </div>
+                <div class="mt-4 pt-3 border-t border-gray-50 flex justify-between items-center">
+                    <span class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-[10px] font-bold">{{ s.className }}</span>
+                    <span class="text-[10px] text-gray-400">{{ s.grade }}级</span>
                 </div>
             </div>
         </div>
-    </transition-group>
 
-    <!-- 空状态 -->
-    <div v-if="filteredStudents.length === 0" class="text-center py-20 animate__animated animate__fadeIn">
-        <div class="text-6xl mb-4">Empty</div>
-        <p class="text-gray-400 text-lg">没有找到符合条件的学生</p>
-    </div>
+        <!-- 加载更多提示 (滚动监听) -->
+        <div v-if="hasMore" id="load-more-trigger" class="py-10 text-center text-gray-400 text-sm italic">
+            正在加载更多...
+        </div>
+        
+        <!-- 空状态 -->
+        <div v-if="!loading && filteredStudents.length === 0" class="py-20 text-center">
+            <div class="text-4xl mb-2">🍃</div>
+            <p class="text-gray-400">没有找到匹配的数据</p>
+        </div>
+    </main>
 </div>
 
 <script>
-    const { createApp, ref, computed, onMounted } = Vue;
+    const { createApp, ref, computed, onMounted, watch } = Vue;
 
     createApp({
         setup() {
             const allStudents = ref([]);
             const loading = ref(true);
+            const displayLimit = ref(40); // 初始显示40条
             const filters = ref({
                 collegeName: '',
                 majorName: '',
@@ -163,46 +111,74 @@
             // 获取数据
             onMounted(async () => {
                 try {
-                    // 这里直接读取同仓库下的文件
                     const response = await fetch('./student_info.json');
-                    if (!response.ok) throw new Error('数据加载失败');
-                    allStudents.value = await response.json();
+                    const data = await response.json();
+                    // 性能优化：Object.freeze 告诉 Vue 不要递归监听这 10000 个对象
+                    allStudents.value = Object.freeze(data);
                 } catch (err) {
-                    console.error('Error:', err);
-                    alert('无法加载 student_info.json，请确保文件存在并处于 Web 服务环境中。');
+                    alert('数据加载失败，请检查 student_info.json 是否存在');
                 } finally {
-                    loading.ref = false;
-                    // 模拟加载动画
-                    setTimeout(() => loading.value = false, 600);
+                    loading.value = false;
+                    setupScrollListener();
                 }
             });
 
-            // 动态生成下拉选项（联动逻辑）
+            // 提取选项逻辑 (针对大数据优化)
             const getOptions = (type) => {
-                let list = allStudents.value;
-                
-                // 联动：如果选了学院，专业只显示该学院的
+                let source = allStudents.value;
                 if (type === 'majorName' && filters.value.collegeName) {
-                    list = list.filter(s => s.collegeName === filters.value.collegeName);
+                    source = source.filter(s => s.collegeName === filters.value.collegeName);
                 }
-                // 联动：如果选了专业，班级只显示该专业的
                 if (type === 'className' && filters.value.majorName) {
-                    list = list.filter(s => s.majorName === filters.value.majorName);
+                    source = source.filter(s => s.majorName === filters.value.majorName);
                 }
-
-                const options = list.map(s => s[type]);
-                return [...new Set(options)].sort();
+                const set = new Set();
+                for(let i=0; i<source.length; i++) {
+                    set.add(source[i][type]);
+                }
+                return Array.from(set).sort();
             };
 
-            // 核心过滤
+            // 核心过滤逻辑
             const filteredStudents = computed(() => {
+                const f = filters.value;
+                // 如果没有任何筛选，直接返回原数据提高速度
+                if (!f.collegeName && !f.majorName && !f.className && !f.grade) {
+                    return allStudents.value;
+                }
                 return allStudents.value.filter(s => {
-                    return (!filters.value.collegeName || s.collegeName === filters.value.collegeName) &&
-                           (!filters.value.majorName || s.majorName === filters.value.majorName) &&
-                           (!filters.value.className || s.className === filters.value.className) &&
-                           (!filters.value.grade || s.grade === filters.value.grade);
+                    return (!f.collegeName || s.collegeName === f.collegeName) &&
+                           (!f.majorName || s.majorName === f.majorName) &&
+                           (!f.className || s.className === f.className) &&
+                           (!f.grade || s.grade === f.grade);
                 });
             });
+
+            // 最终渲染到屏幕上的数据（只取一部分）
+            const displayedStudents = computed(() => {
+                return filteredStudents.value.slice(0, displayLimit.value);
+            });
+
+            const hasMore = computed(() => {
+                return displayLimit.value < filteredStudents.value.length;
+            });
+
+            // 监听滚动实现无限加载
+            const setupScrollListener = () => {
+                window.addEventListener('scroll', () => {
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                        if (hasMore.value) {
+                            displayLimit.value += 40; // 每次加载更多40条
+                        }
+                    }
+                });
+            };
+
+            // 当筛选条件改变时，重置显示限制
+            watch(filters, () => {
+                displayLimit.value = 40;
+                window.scrollTo(0, 0);
+            }, { deep: true });
 
             const resetFilters = () => {
                 filters.value = { collegeName: '', majorName: '', className: '', grade: '' };
@@ -215,11 +191,13 @@
                 filterLabels,
                 getOptions,
                 filteredStudents,
-                resetFilters
+                displayedStudents,
+                hasMore,
+                resetFilters,
+                totalCount: computed(() => allStudents.value.length)
             };
         }
     }).mount('#app');
 </script>
-
 </body>
 </html>
