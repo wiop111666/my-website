@@ -1,0 +1,1837 @@
+[
+    {
+        "province": "北京市",
+        "plates": [
+            {
+                "plate": "京A",
+                "region": "北京市"
+            },
+            {
+                "plate": "京B",
+                "region": "北京市出租车专用"
+            },
+            {
+                "plate": "京C",
+                "region": "北京市"
+            },
+            {
+                "plate": "京D",
+                "region": "北京市"
+            },
+            {
+                "plate": "京E",
+                "region": "北京市"
+            },
+            {
+                "plate": "京F",
+                "region": "北京市"
+            },
+            {
+                "plate": "京G",
+                "region": "北京市"
+            },
+            {
+                "plate": "京H",
+                "region": "北京市"
+            },
+            {
+                "plate": "京J",
+                "region": "北京市"
+            },
+            {
+                "plate": "京K",
+                "region": "北京市"
+            },
+            {
+                "plate": "京L",
+                "region": "北京市"
+            },
+            {
+                "plate": "京M",
+                "region": "北京市"
+            },
+            {
+                "plate": "京N",
+                "region": "北京市"
+            },
+            {
+                "plate": "京O",
+                "region": "北京市公安局专用"
+            },
+            {
+                "plate": "京P",
+                "region": "北京市"
+            },
+            {
+                "plate": "京Q",
+                "region": "北京市"
+            },
+            {
+                "plate": "京Y",
+                "region": "北京市"
+            },
+            {
+                "plate": "京V",
+                "region": "中央直属部队专用"
+            }
+        ]
+    },
+    {
+        "province": "上海市",
+        "plates": [
+            {
+                "plate": "沪A",
+                "region": "上海市"
+            },
+            {
+                "plate": "沪B",
+                "region": "上海市"
+            },
+            {
+                "plate": "沪C",
+                "region": "上海市"
+            },
+            {
+                "plate": "沪D",
+                "region": "上海市"
+            },
+            {
+                "plate": "沪E",
+                "region": "上海市"
+            },
+            {
+                "plate": "沪F",
+                "region": "上海市"
+            },
+            {
+                "plate": "沪G",
+                "region": "上海市"
+            },
+            {
+                "plate": "沪H",
+                "region": "上海市"
+            },
+            {
+                "plate": "沪L",
+                "region": "上海市"
+            },
+            {
+                "plate": "沪J",
+                "region": "上海市"
+            },
+            {
+                "plate": "沪K",
+                "region": "上海市"
+            },
+            {
+                "plate": "沪R",
+                "region": "崇明区出租车"
+            }
+        ]
+    },
+    {
+        "province": "天津市",
+        "plates": [
+            {
+                "plate": "津A",
+                "region": "天津市"
+            },
+            {
+                "plate": "津B",
+                "region": "天津市"
+            },
+            {
+                "plate": "津C",
+                "region": "天津市"
+            },
+            {
+                "plate": "津D",
+                "region": "天津市"
+            },
+            {
+                "plate": "津E",
+                "region": "天津市出租车专用"
+            },
+            {
+                "plate": "津F",
+                "region": "天津市"
+            },
+            {
+                "plate": "津G",
+                "region": "天津市"
+            },
+            {
+                "plate": "津H",
+                "region": "天津市"
+            },
+            {
+                "plate": "津J",
+                "region": "天津市"
+            },
+            {
+                "plate": "津K",
+                "region": "天津市"
+            },
+            {
+                "plate": "津L",
+                "region": "天津市"
+            },
+            {
+                "plate": "津O",
+                "region": "天津市公安局专用"
+            }
+        ]
+    },
+    {
+        "province": "重庆市",
+        "plates": [
+            {
+                "plate": "渝A",
+                "region": "渝中区、九龙坡区、沙坪坝区等"
+            },
+            {
+                "plate": "渝B",
+                "region": "南岸区、北碚区、渝北区等"
+            },
+            {
+                "plate": "渝C",
+                "region": "永川区、江津区、合川区等"
+            },
+            {
+                "plate": "渝D",
+                "region": "重庆市全域（含市区、郊区）"
+            },
+            {
+                "plate": "渝F",
+                "region": "万州区、梁平区、城口县等"
+            },
+            {
+                "plate": "渝G",
+                "region": "涪陵区、南川区、垫江县等"
+            },
+            {
+                "plate": "渝H",
+                "region": "黔江区、石柱土家族自治县等"
+            },
+            {
+                "plate": "渝N",
+                "region": "国有政企专用牌照"
+            }
+        ]
+    },
+    {
+        "province": "河北省",
+        "plates": [
+            {
+                "plate": "冀A",
+                "region": "石家庄市"
+            },
+            {
+                "plate": "冀B",
+                "region": "唐山市"
+            },
+            {
+                "plate": "冀C",
+                "region": "秦皇岛市"
+            },
+            {
+                "plate": "冀D",
+                "region": "邯郸市"
+            },
+            {
+                "plate": "冀E",
+                "region": "邢台市"
+            },
+            {
+                "plate": "冀F",
+                "region": "保定市"
+            },
+            {
+                "plate": "冀G",
+                "region": "张家口市"
+            },
+            {
+                "plate": "冀H",
+                "region": "承德市"
+            },
+            {
+                "plate": "冀J",
+                "region": "沧州市"
+            },
+            {
+                "plate": "冀O",
+                "region": "省直机关"
+            },
+            {
+                "plate": "冀R",
+                "region": "廊坊市"
+            },
+            {
+                "plate": "冀S",
+                "region": "沧州市"
+            },
+            {
+                "plate": "冀T",
+                "region": "衡水市"
+            },
+            {
+                "plate": "冀X",
+                "region": "雄安新区"
+            }
+        ]
+    },
+    {
+        "province": "河南省",
+        "plates": [
+            {
+                "plate": "豫A",
+                "region": "郑州市"
+            },
+            {
+                "plate": "豫B",
+                "region": "开封市"
+            },
+            {
+                "plate": "豫C",
+                "region": "洛阳市"
+            },
+            {
+                "plate": "豫D",
+                "region": "平顶山市"
+            },
+            {
+                "plate": "豫E",
+                "region": "安阳市"
+            },
+            {
+                "plate": "豫F",
+                "region": "鹤壁市"
+            },
+            {
+                "plate": "豫G",
+                "region": "新乡市"
+            },
+            {
+                "plate": "豫H",
+                "region": "焦作市"
+            },
+            {
+                "plate": "豫J",
+                "region": "濮阳市"
+            },
+            {
+                "plate": "豫K",
+                "region": "许昌市"
+            },
+            {
+                "plate": "豫L",
+                "region": "漯河市"
+            },
+            {
+                "plate": "豫M",
+                "region": "三门峡市"
+            },
+            {
+                "plate": "豫N",
+                "region": "商丘市"
+            },
+            {
+                "plate": "豫P",
+                "region": "周口市"
+            },
+            {
+                "plate": "豫Q",
+                "region": "驻马店市"
+            },
+            {
+                "plate": "豫R",
+                "region": "南阳市"
+            },
+            {
+                "plate": "豫S",
+                "region": "信阳市"
+            },
+            {
+                "plate": "豫U",
+                "region": "济源市"
+            },
+            {
+                "plate": "豫V",
+                "region": "郑州市"
+            }
+        ]
+    },
+    {
+        "province": "云南省",
+        "plates": [
+            {
+                "plate": "云A",
+                "region": "昆明市"
+            },
+            {
+                "plate": "云AV",
+                "region": "昆明市东川区"
+            },
+            {
+                "plate": "云C",
+                "region": "昭通市"
+            },
+            {
+                "plate": "云D",
+                "region": "曲靖市"
+            },
+            {
+                "plate": "云E",
+                "region": "楚雄彝族自治州"
+            },
+            {
+                "plate": "云F",
+                "region": "玉溪市"
+            },
+            {
+                "plate": "云G",
+                "region": "红河哈尼族彝族自治州"
+            },
+            {
+                "plate": "云H",
+                "region": "文山壮族苗族自治州"
+            },
+            {
+                "plate": "云J",
+                "region": "普洱市"
+            },
+            {
+                "plate": "云K",
+                "region": "西双版纳傣族自治州"
+            },
+            {
+                "plate": "云L",
+                "region": "大理白族自治州"
+            },
+            {
+                "plate": "云M",
+                "region": "保山市"
+            },
+            {
+                "plate": "云N",
+                "region": "德宏傣族景颇族自治州"
+            },
+            {
+                "plate": "云P",
+                "region": "丽江市"
+            },
+            {
+                "plate": "云Q",
+                "region": "怒江傈僳族自治州"
+            },
+            {
+                "plate": "云R",
+                "region": "迪庆藏族自治州"
+            },
+            {
+                "plate": "云S",
+                "region": "临沧市"
+            }
+        ]
+    },
+    {
+        "province": "辽宁省",
+        "plates": [
+            {
+                "plate": "辽A",
+                "region": "沈阳市"
+            },
+            {
+                "plate": "辽B",
+                "region": "大连市"
+            },
+            {
+                "plate": "辽C",
+                "region": "鞍山市"
+            },
+            {
+                "plate": "辽D",
+                "region": "抚顺市"
+            },
+            {
+                "plate": "辽E",
+                "region": "本溪市"
+            },
+            {
+                "plate": "辽F",
+                "region": "丹东市"
+            },
+            {
+                "plate": "辽G",
+                "region": "锦州市"
+            },
+            {
+                "plate": "辽H",
+                "region": "营口市"
+            },
+            {
+                "plate": "辽J",
+                "region": "阜新市"
+            },
+            {
+                "plate": "辽K",
+                "region": "辽阳市"
+            },
+            {
+                "plate": "辽L",
+                "region": "盘锦市"
+            },
+            {
+                "plate": "辽M",
+                "region": "铁岭市"
+            },
+            {
+                "plate": "辽N",
+                "region": "朝阳市"
+            },
+            {
+                "plate": "辽P",
+                "region": "葫芦岛市"
+            },
+            {
+                "plate": "辽V",
+                "region": "省直机关"
+            }
+        ]
+    },
+    {
+        "province": "黑龙江省",
+        "plates": [
+            {
+                "plate": "黑A",
+                "region": "哈尔滨市"
+            },
+            {
+                "plate": "黑B",
+                "region": "齐齐哈尔市"
+            },
+            {
+                "plate": "黑C",
+                "region": "牡丹江市"
+            },
+            {
+                "plate": "黑D",
+                "region": "佳木斯市"
+            },
+            {
+                "plate": "黑E",
+                "region": "大庆市"
+            },
+            {
+                "plate": "黑F",
+                "region": "伊春市"
+            },
+            {
+                "plate": "黑G",
+                "region": "鸡西市"
+            },
+            {
+                "plate": "黑H",
+                "region": "鹤岗市"
+            },
+            {
+                "plate": "黑J",
+                "region": "双鸭山市"
+            },
+            {
+                "plate": "黑K",
+                "region": "七台河市"
+            },
+            {
+                "plate": "黑L",
+                "region": "哈尔滨市"
+            },
+            {
+                "plate": "黑M",
+                "region": "绥化市"
+            },
+            {
+                "plate": "黑N",
+                "region": "黑河市"
+            },
+            {
+                "plate": "黑P",
+                "region": "大兴安岭地区"
+            },
+            {
+                "plate": "黑R",
+                "region": "农垦系统"
+            }
+        ]
+    },
+    {
+        "province": "湖南省",
+        "plates": [
+            {
+                "plate": "湘A",
+                "region": "长沙市"
+            },
+            {
+                "plate": "湘B",
+                "region": "株洲市"
+            },
+            {
+                "plate": "湘C",
+                "region": "湘潭市"
+            },
+            {
+                "plate": "湘D",
+                "region": "衡阳市"
+            },
+            {
+                "plate": "湘E",
+                "region": "邵阳市"
+            },
+            {
+                "plate": "湘F",
+                "region": "岳阳市"
+            },
+            {
+                "plate": "湘G",
+                "region": "张家界市"
+            },
+            {
+                "plate": "湘H",
+                "region": "益阳市"
+            },
+            {
+                "plate": "湘J",
+                "region": "常德市"
+            },
+            {
+                "plate": "湘K",
+                "region": "娄底市"
+            },
+            {
+                "plate": "湘L",
+                "region": "郴州市"
+            },
+            {
+                "plate": "湘M",
+                "region": "永州市"
+            },
+            {
+                "plate": "湘N",
+                "region": "怀化市"
+            },
+            {
+                "plate": "湘U",
+                "region": "湘西土家族苗族自治州"
+            }
+        ]
+    },
+    {
+        "province": "安徽省",
+        "plates": [
+            {
+                "plate": "皖A",
+                "region": "合肥市"
+            },
+            {
+                "plate": "皖B",
+                "region": "芜湖市"
+            },
+            {
+                "plate": "皖C",
+                "region": "蚌埠市"
+            },
+            {
+                "plate": "皖D",
+                "region": "淮南市"
+            },
+            {
+                "plate": "皖E",
+                "region": "马鞍山市"
+            },
+            {
+                "plate": "皖F",
+                "region": "淮北市"
+            },
+            {
+                "plate": "皖G",
+                "region": "铜陵市"
+            },
+            {
+                "plate": "皖H",
+                "region": "安庆市"
+            },
+            {
+                "plate": "皖J",
+                "region": "黄山市"
+            },
+            {
+                "plate": "皖K",
+                "region": "阜阳市"
+            },
+            {
+                "plate": "皖L",
+                "region": "宿州市"
+            },
+            {
+                "plate": "皖M",
+                "region": "滁州市"
+            },
+            {
+                "plate": "皖N",
+                "region": "六安市"
+            },
+            {
+                "plate": "皖P",
+                "region": "宣城市"
+            },
+            {
+                "plate": "皖Q",
+                "region": "合肥市巢湖市"
+            },
+            {
+                "plate": "皖R",
+                "region": "池州市"
+            },
+            {
+                "plate": "皖S",
+                "region": "亳州市"
+            }
+        ]
+    },
+    {
+        "province": "山东省",
+        "plates": [
+            {
+                "plate": "鲁A",
+                "region": "济南市"
+            },
+            {
+                "plate": "鲁B",
+                "region": "青岛市"
+            },
+            {
+                "plate": "鲁C",
+                "region": "淄博市"
+            },
+            {
+                "plate": "鲁D",
+                "region": "枣庄市"
+            },
+            {
+                "plate": "鲁E",
+                "region": "东营市"
+            },
+            {
+                "plate": "鲁F",
+                "region": "烟台市"
+            },
+            {
+                "plate": "鲁G",
+                "region": "潍坊市"
+            },
+            {
+                "plate": "鲁H",
+                "region": "济宁市"
+            },
+            {
+                "plate": "鲁J",
+                "region": "泰安市"
+            },
+            {
+                "plate": "鲁K",
+                "region": "威海市"
+            },
+            {
+                "plate": "鲁L",
+                "region": "日照市"
+            },
+            {
+                "plate": "鲁M",
+                "region": "滨州市"
+            },
+            {
+                "plate": "鲁N",
+                "region": "德州市"
+            },
+            {
+                "plate": "鲁O",
+                "region": "省直机关"
+            },
+            {
+                "plate": "鲁P",
+                "region": "聊城市"
+            },
+            {
+                "plate": "鲁Q",
+                "region": "临沂市"
+            },
+            {
+                "plate": "鲁R",
+                "region": "菏泽市"
+            },
+            {
+                "plate": "鲁S",
+                "region": "济南市莱芜区、钢城区"
+            },
+            {
+                "plate": "鲁U",
+                "region": "青岛市"
+            },
+            {
+                "plate": "鲁V",
+                "region": "潍坊市"
+            },
+            {
+                "plate": "鲁Y",
+                "region": "烟台市"
+            },
+            {
+                "plate": "鲁W",
+                "region": "省直属机关和临沂市"
+            }
+        ]
+    },
+    {
+        "province": "新疆维吾尔自治区",
+        "plates": [
+            {
+                "plate": "新A",
+                "region": "乌鲁木齐市"
+            },
+            {
+                "plate": "新B",
+                "region": "昌吉回族自治州"
+            },
+            {
+                "plate": "新C",
+                "region": "石河子市"
+            },
+            {
+                "plate": "新D",
+                "region": "奎屯市"
+            },
+            {
+                "plate": "新E",
+                "region": "博尔塔拉蒙古自治州"
+            },
+            {
+                "plate": "新F",
+                "region": "伊犁哈萨克自治州"
+            },
+            {
+                "plate": "新G",
+                "region": "塔城地区"
+            },
+            {
+                "plate": "新H",
+                "region": "阿勒泰地区"
+            },
+            {
+                "plate": "新J",
+                "region": "克拉玛依市"
+            },
+            {
+                "plate": "新K",
+                "region": "吐鲁番市"
+            },
+            {
+                "plate": "新L",
+                "region": "哈密市"
+            },
+            {
+                "plate": "新M",
+                "region": "巴音郭愣蒙古自治州"
+            },
+            {
+                "plate": "新N",
+                "region": "阿克苏地区"
+            },
+            {
+                "plate": "新P",
+                "region": "克孜勒苏柯尔克孜自治州"
+            },
+            {
+                "plate": "新Q",
+                "region": "喀什地区"
+            },
+            {
+                "plate": "新R",
+                "region": "和田地区"
+            }
+        ]
+    },
+    {
+        "province": "江苏省",
+        "plates": [
+            {
+                "plate": "苏A",
+                "region": "南京市"
+            },
+            {
+                "plate": "苏B",
+                "region": "无锡市"
+            },
+            {
+                "plate": "苏C",
+                "region": "徐州市"
+            },
+            {
+                "plate": "苏D",
+                "region": "常州市"
+            },
+            {
+                "plate": "苏E",
+                "region": "苏州市"
+            },
+            {
+                "plate": "苏F",
+                "region": "南通市"
+            },
+            {
+                "plate": "苏G",
+                "region": "连云港市"
+            },
+            {
+                "plate": "苏H",
+                "region": "淮安市"
+            },
+            {
+                "plate": "苏J",
+                "region": "盐城市"
+            },
+            {
+                "plate": "苏K",
+                "region": "扬州市"
+            },
+            {
+                "plate": "苏L",
+                "region": "镇江市"
+            },
+            {
+                "plate": "苏M",
+                "region": "泰州市"
+            },
+            {
+                "plate": "苏N",
+                "region": "宿迁市"
+            },
+            {
+                "plate": "苏U",
+                "region": "苏州市"
+            }
+        ]
+    },
+    {
+        "province": "浙江省",
+        "plates": [
+            {
+                "plate": "浙A",
+                "region": "杭州市"
+            },
+            {
+                "plate": "浙B",
+                "region": "宁波市"
+            },
+            {
+                "plate": "浙C",
+                "region": "温州市"
+            },
+            {
+                "plate": "浙D",
+                "region": "绍兴市"
+            },
+            {
+                "plate": "浙E",
+                "region": "湖州市"
+            },
+            {
+                "plate": "浙F",
+                "region": "嘉兴市"
+            },
+            {
+                "plate": "浙G",
+                "region": "金华市"
+            },
+            {
+                "plate": "浙H",
+                "region": "衢州市"
+            },
+            {
+                "plate": "浙J",
+                "region": "台州市"
+            },
+            {
+                "plate": "浙K",
+                "region": "丽水市"
+            },
+            {
+                "plate": "浙L",
+                "region": "舟山市"
+            }
+        ]
+    },
+    {
+        "province": "江西省",
+        "plates": [
+            {
+                "plate": "赣A",
+                "region": "南昌市"
+            },
+            {
+                "plate": "赣B",
+                "region": "赣州市"
+            },
+            {
+                "plate": "赣C",
+                "region": "宜春市"
+            },
+            {
+                "plate": "赣D",
+                "region": "吉安市"
+            },
+            {
+                "plate": "赣E",
+                "region": "上饶市"
+            },
+            {
+                "plate": "赣F",
+                "region": "抚州市"
+            },
+            {
+                "plate": "赣G",
+                "region": "九江市"
+            },
+            {
+                "plate": "赣H",
+                "region": "景德镇市"
+            },
+            {
+                "plate": "赣J",
+                "region": "萍乡市"
+            },
+            {
+                "plate": "赣K",
+                "region": "新余市"
+            },
+            {
+                "plate": "赣L",
+                "region": "鹰潭市"
+            },
+            {
+                "plate": "赣M",
+                "region": "南昌市、省直系统市"
+            }
+        ]
+    },
+    {
+        "province": "湖北省",
+        "plates": [
+            {
+                "plate": "鄂A",
+                "region": "武汉市"
+            },
+            {
+                "plate": "鄂B",
+                "region": "黄石市"
+            },
+            {
+                "plate": "鄂C",
+                "region": "十堰市"
+            },
+            {
+                "plate": "鄂D",
+                "region": "荆州市"
+            },
+            {
+                "plate": "鄂E",
+                "region": "宜昌市"
+            },
+            {
+                "plate": "鄂F",
+                "region": "襄樊市"
+            },
+            {
+                "plate": "鄂G",
+                "region": "鄂州市"
+            },
+            {
+                "plate": "鄂H",
+                "region": "荆门市"
+            },
+            {
+                "plate": "鄂J",
+                "region": "黄冈市"
+            },
+            {
+                "plate": "鄂K",
+                "region": "孝感市"
+            },
+            {
+                "plate": "鄂L",
+                "region": "咸宁市"
+            },
+            {
+                "plate": "鄂M",
+                "region": "仙桃市"
+            },
+            {
+                "plate": "鄂N",
+                "region": "潜江市"
+            },
+            {
+                "plate": "鄂P",
+                "region": "神农架林区"
+            },
+            {
+                "plate": "鄂Q",
+                "region": "恩施土家族苗族自治州"
+            },
+            {
+                "plate": "鄂R",
+                "region": "天门市"
+            },
+            {
+                "plate": "鄂S",
+                "region": "随州市"
+            },
+            {
+                "plate": "鄂W",
+                "region": "武汉市"
+            }
+        ]
+    },
+    {
+        "province": "广西壮族自治区",
+        "plates": [
+            {
+                "plate": "桂A",
+                "region": "南宁市"
+            },
+            {
+                "plate": "桂B",
+                "region": "柳州市"
+            },
+            {
+                "plate": "桂C",
+                "region": "桂林市"
+            },
+            {
+                "plate": "桂D",
+                "region": "梧州市"
+            },
+            {
+                "plate": "桂E",
+                "region": "北海市"
+            },
+            {
+                "plate": "桂F",
+                "region": "崇左市"
+            },
+            {
+                "plate": "桂G",
+                "region": "来宾市"
+            },
+            {
+                "plate": "桂H",
+                "region": "桂林市"
+            },
+            {
+                "plate": "桂J",
+                "region": "贺州市"
+            },
+            {
+                "plate": "桂K",
+                "region": "玉林市"
+            },
+            {
+                "plate": "桂L",
+                "region": "百色市"
+            },
+            {
+                "plate": "桂M",
+                "region": "河池市"
+            },
+            {
+                "plate": "桂N",
+                "region": "钦州市"
+            },
+            {
+                "plate": "桂P",
+                "region": "防城港市"
+            },
+            {
+                "plate": "桂R",
+                "region": "贵港市"
+            }
+        ]
+    },
+    {
+        "province": "甘肃省",
+        "plates": [
+            {
+                "plate": "甘A",
+                "region": "兰州市"
+            },
+            {
+                "plate": "甘B",
+                "region": "嘉峪关市"
+            },
+            {
+                "plate": "甘C",
+                "region": "金昌市"
+            },
+            {
+                "plate": "甘D",
+                "region": "白银市"
+            },
+            {
+                "plate": "甘E",
+                "region": "天水市"
+            },
+            {
+                "plate": "甘F",
+                "region": "酒泉市"
+            },
+            {
+                "plate": "甘G",
+                "region": "张掖市"
+            },
+            {
+                "plate": "甘H",
+                "region": "武威市"
+            },
+            {
+                "plate": "甘J",
+                "region": "定西市"
+            },
+            {
+                "plate": "甘K",
+                "region": "陇南市"
+            },
+            {
+                "plate": "甘L",
+                "region": "平凉市"
+            },
+            {
+                "plate": "甘M",
+                "region": "庆阳市"
+            },
+            {
+                "plate": "甘N",
+                "region": "临夏回族自治州"
+            },
+            {
+                "plate": "甘P",
+                "region": "甘南藏族自治州"
+            }
+        ]
+    },
+    {
+        "province": "山西省",
+        "plates": [
+            {
+                "plate": "晋A",
+                "region": "太原市"
+            },
+            {
+                "plate": "晋B",
+                "region": "大同市"
+            },
+            {
+                "plate": "晋C",
+                "region": "阳泉市"
+            },
+            {
+                "plate": "晋D",
+                "region": "长治市"
+            },
+            {
+                "plate": "晋E",
+                "region": "晋城市"
+            },
+            {
+                "plate": "晋F",
+                "region": "朔州市"
+            },
+            {
+                "plate": "晋H",
+                "region": "忻州市"
+            },
+            {
+                "plate": "晋J",
+                "region": "吕梁市"
+            },
+            {
+                "plate": "晋K",
+                "region": "晋中市"
+            },
+            {
+                "plate": "晋L",
+                "region": "临汾市"
+            },
+            {
+                "plate": "晋M",
+                "region": "运城市"
+            }
+        ]
+    },
+    {
+        "province": "内蒙古自治区",
+        "plates": [
+            {
+                "plate": "蒙A",
+                "region": "呼和浩特市"
+            },
+            {
+                "plate": "蒙B",
+                "region": "包头市"
+            },
+            {
+                "plate": "蒙C",
+                "region": "乌海市"
+            },
+            {
+                "plate": "蒙D",
+                "region": "赤峰市"
+            },
+            {
+                "plate": "蒙E",
+                "region": "呼伦贝尔市"
+            },
+            {
+                "plate": "蒙F",
+                "region": "兴安盟"
+            },
+            {
+                "plate": "蒙G",
+                "region": "通辽市"
+            },
+            {
+                "plate": "蒙H",
+                "region": "锡林郭勒盟"
+            },
+            {
+                "plate": "蒙J",
+                "region": "乌兰察布市"
+            },
+            {
+                "plate": "蒙K",
+                "region": "鄂尔多斯市"
+            },
+            {
+                "plate": "蒙L",
+                "region": "巴彦淖尔市"
+            },
+            {
+                "plate": "蒙M",
+                "region": "阿拉善盟"
+            }
+        ]
+    },
+    {
+        "province": "陕西省",
+        "plates": [
+            {
+                "plate": "陕A",
+                "region": "西安市"
+            },
+            {
+                "plate": "陕B",
+                "region": "铜川市"
+            },
+            {
+                "plate": "陕C",
+                "region": "宝鸡市"
+            },
+            {
+                "plate": "陕D",
+                "region": "咸阳市"
+            },
+            {
+                "plate": "陕E",
+                "region": "渭南市"
+            },
+            {
+                "plate": "陕F",
+                "region": "汉中市"
+            },
+            {
+                "plate": "陕G",
+                "region": "安康市"
+            },
+            {
+                "plate": "陕H",
+                "region": "商洛市"
+            },
+            {
+                "plate": "陕J",
+                "region": "延安市"
+            },
+            {
+                "plate": "陕K",
+                "region": "榆林市"
+            },
+            {
+                "plate": "陕V",
+                "region": "咸阳市杨陵区"
+            }
+        ]
+    },
+    {
+        "province": "吉林省",
+        "plates": [
+            {
+                "plate": "吉A",
+                "region": "长春市"
+            },
+            {
+                "plate": "吉B",
+                "region": "吉林市"
+            },
+            {
+                "plate": "吉C",
+                "region": "四平市"
+            },
+            {
+                "plate": "吉D",
+                "region": "辽源市"
+            },
+            {
+                "plate": "吉E",
+                "region": "通化市"
+            },
+            {
+                "plate": "吉F",
+                "region": "白山市"
+            },
+            {
+                "plate": "吉G",
+                "region": "白城市"
+            },
+            {
+                "plate": "吉H",
+                "region": "延边朝鲜族自治州"
+            },
+            {
+                "plate": "吉J",
+                "region": "松原市"
+            },
+            {
+                "plate": "吉K",
+                "region": "长白朝鲜族自治县"
+            }
+        ]
+    },
+    {
+        "province": "福建省",
+        "plates": [
+            {
+                "plate": "闽A",
+                "region": "福州市"
+            },
+            {
+                "plate": "闽B",
+                "region": "莆田市"
+            },
+            {
+                "plate": "闽C",
+                "region": "泉州市"
+            },
+            {
+                "plate": "闽D",
+                "region": "厦门市"
+            },
+            {
+                "plate": "闽E",
+                "region": "漳州市"
+            },
+            {
+                "plate": "闽F",
+                "region": "龙岩市"
+            },
+            {
+                "plate": "闽G",
+                "region": "三明市"
+            },
+            {
+                "plate": "闽H",
+                "region": "南平市"
+            },
+            {
+                "plate": "闽J",
+                "region": "宁德市"
+            },
+            {
+                "plate": "闽K",
+                "region": "平潭综合试验区"
+            }
+        ]
+    },
+    {
+        "province": "贵州省",
+        "plates": [
+            {
+                "plate": "贵A",
+                "region": "贵阳市"
+            },
+            {
+                "plate": "贵B",
+                "region": "六盘水市"
+            },
+            {
+                "plate": "贵C",
+                "region": "遵义市"
+            },
+            {
+                "plate": "贵D",
+                "region": "铜仁市"
+            },
+            {
+                "plate": "贵E",
+                "region": "黔西南布依族苗族自治州"
+            },
+            {
+                "plate": "贵F",
+                "region": "毕节市"
+            },
+            {
+                "plate": "贵G",
+                "region": "安顺市"
+            },
+            {
+                "plate": "贵H",
+                "region": "黔东南苗族侗族自治州"
+            },
+            {
+                "plate": "贵J",
+                "region": "黔南布依族苗族自治州"
+            }
+        ]
+    },
+    {
+        "province": "广东省",
+        "plates": [
+            {
+                "plate": "粤A",
+                "region": "广州市"
+            },
+            {
+                "plate": "粤B",
+                "region": "深圳市"
+            },
+            {
+                "plate": "粤C",
+                "region": "珠海市"
+            },
+            {
+                "plate": "粤D",
+                "region": "汕头市"
+            },
+            {
+                "plate": "粤E",
+                "region": "佛山市"
+            },
+            {
+                "plate": "粤F",
+                "region": "韶关市"
+            },
+            {
+                "plate": "粤G",
+                "region": "湛江市"
+            },
+            {
+                "plate": "粤H",
+                "region": "肇庆市"
+            },
+            {
+                "plate": "粤J",
+                "region": "江门市"
+            },
+            {
+                "plate": "粤K",
+                "region": "茂名市"
+            },
+            {
+                "plate": "粤L",
+                "region": "惠州市"
+            },
+            {
+                "plate": "粤M",
+                "region": "梅州市"
+            },
+            {
+                "plate": "粤N",
+                "region": "汕尾市"
+            },
+            {
+                "plate": "粤P",
+                "region": "河源市"
+            },
+            {
+                "plate": "粤Q",
+                "region": "阳江市"
+            },
+            {
+                "plate": "粤R",
+                "region": "清远市"
+            },
+            {
+                "plate": "粤S",
+                "region": "东莞市"
+            },
+            {
+                "plate": "粤T",
+                "region": "中山市"
+            },
+            {
+                "plate": "粤U",
+                "region": "潮州市"
+            },
+            {
+                "plate": "粤V",
+                "region": "揭阳市"
+            },
+            {
+                "plate": "粤W",
+                "region": "云浮市"
+            },
+            {
+                "plate": "粤X",
+                "region": "佛山市顺德区"
+            },
+            {
+                "plate": "粤Y",
+                "region": "佛山市南海区"
+            },
+            {
+                "plate": "粤Z",
+                "region": "港澳进入内地车辆"
+            }
+        ]
+    },
+    {
+        "province": "四川省",
+        "plates": [
+            {
+                "plate": "川A",
+                "region": "成都市"
+            },
+            {
+                "plate": "川B",
+                "region": "绵阳市"
+            },
+            {
+                "plate": "川C",
+                "region": "自贡市"
+            },
+            {
+                "plate": "川D",
+                "region": "攀枝花市"
+            },
+            {
+                "plate": "川E",
+                "region": "泸州市"
+            },
+            {
+                "plate": "川F",
+                "region": "德阳市"
+            },
+            {
+                "plate": "川G",
+                "region": "成都市"
+            },
+            {
+                "plate": "川H",
+                "region": "广元市"
+            },
+            {
+                "plate": "川J",
+                "region": "遂宁市"
+            },
+            {
+                "plate": "川K",
+                "region": "内江市"
+            },
+            {
+                "plate": "川L",
+                "region": "乐山市"
+            },
+            {
+                "plate": "川M",
+                "region": "简阳市"
+            },
+            {
+                "plate": "川Q",
+                "region": "宜宾市"
+            },
+            {
+                "plate": "川R",
+                "region": "南充市"
+            },
+            {
+                "plate": "川S",
+                "region": "达州市"
+            },
+            {
+                "plate": "川T",
+                "region": "雅安市"
+            },
+            {
+                "plate": "川U",
+                "region": "阿坝藏族羌族自治州"
+            },
+            {
+                "plate": "川V",
+                "region": "甘孜藏族自治州"
+            },
+            {
+                "plate": "川W",
+                "region": "凉山彝族自治州"
+            },
+            {
+                "plate": "川X",
+                "region": "广安市"
+            },
+            {
+                "plate": "川Y",
+                "region": "巴中市"
+            },
+            {
+                "plate": "川Z",
+                "region": "眉山市"
+            }
+        ]
+    },
+    {
+        "province": "青海省",
+        "plates": [
+            {
+                "plate": "青A",
+                "region": "西宁市"
+            },
+            {
+                "plate": "青B",
+                "region": "海东市"
+            },
+            {
+                "plate": "青C",
+                "region": "海北藏族自治州"
+            },
+            {
+                "plate": "青D",
+                "region": "黄南藏族自治州"
+            },
+            {
+                "plate": "青E",
+                "region": "海南藏族自治州"
+            },
+            {
+                "plate": "青F",
+                "region": "果洛藏族自治州"
+            },
+            {
+                "plate": "青G",
+                "region": "玉树藏族自治州"
+            },
+            {
+                "plate": "青H",
+                "region": "海西蒙古族藏族自治州"
+            }
+        ]
+    },
+    {
+        "province": "西藏自治区",
+        "plates": [
+            {
+                "plate": "藏A",
+                "region": "拉萨市"
+            },
+            {
+                "plate": "藏B",
+                "region": "昌都市"
+            },
+            {
+                "plate": "藏C",
+                "region": "山南市"
+            },
+            {
+                "plate": "藏D",
+                "region": "日喀则市"
+            },
+            {
+                "plate": "藏E",
+                "region": "那曲市"
+            },
+            {
+                "plate": "藏F",
+                "region": "阿里地区"
+            },
+            {
+                "plate": "藏G",
+                "region": "林芝市"
+            },
+            {
+                "plate": "藏H",
+                "region": "驻四川省天全县车辆管理所"
+            },
+            {
+                "plate": "藏J",
+                "region": "驻青海省格尔木市车辆管理所"
+            }
+        ]
+    },
+    {
+        "province": "海南省",
+        "plates": [
+            {
+                "plate": "琼A",
+                "region": "海口市"
+            },
+            {
+                "plate": "琼B",
+                "region": "三亚市"
+            },
+            {
+                "plate": "琼C",
+                "region": "三沙市、琼海市、文昌市等"
+            },
+            {
+                "plate": "琼D",
+                "region": "五指山市、东方市、白沙县等"
+            },
+            {
+                "plate": "琼E",
+                "region": "洋浦开发区"
+            },
+            {
+                "plate": "琼F",
+                "region": "儋州市"
+            }
+        ]
+    },
+    {
+        "province": "宁夏回族自治区",
+        "plates": [
+            {
+                "plate": "宁A",
+                "region": "银川市"
+            },
+            {
+                "plate": "宁B",
+                "region": "石嘴山市"
+            },
+            {
+                "plate": "宁C",
+                "region": "银南市"
+            },
+            {
+                "plate": "宁D",
+                "region": "固原市"
+            },
+            {
+                "plate": "宁E",
+                "region": "中卫市"
+            }
+        ]
+    }
+]
