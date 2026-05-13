@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>智慧课表 - 性能优化版</title>
+    <title>智慧课表</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -303,7 +303,7 @@
 
                 onMounted(async () => {
                     try {
-                        const res = await fetch('class_courses.json');
+                        const res = await fetch('class_courses_20260513.json');
                         courses.value = await res.json();
                     } catch (e) {
                         console.error("加载数据失败，请确保 class_courses.json 与 HTML 在同一目录且通过服务器环境访问。");
