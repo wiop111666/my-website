@@ -111,6 +111,12 @@ body { font-family: 'Noto Sans SC', sans-serif; background-color: #fcfcfd; -webk
                                 <span class="text-[10px] text-slate-300 font-bold tracking-widest uppercase">{{ course.major }} - {{ course.class_name }}</span>
                             </div>
                             <h3 class="text-lg font-black text-slate-800 leading-tight">{{ course.course_name }}</h3>
+<div class="mt-2 text-xs text-slate-500 space-y-1">
+    <p>学时：{{ course.total_hours }}</p>
+    <p>学分：{{ course.credits }}</p>
+    <p>上课地点：{{ course.matchedSchedule?.location || '-' }}</p>
+    <p>老师：{{ course.teacher }}（{{ course.role }}）</p>
+</div>
                         </div>
                         <div class="text-right">
                             <span class="text-base font-black text-slate-900 tracking-tighter">{{ course.matchedSchedule?.period || '-' }}</span>
@@ -124,18 +130,24 @@ body { font-family: 'Noto Sans SC', sans-serif; background-color: #fcfcfd; -webk
 
     <!-- 弹窗 -->
     <div v-if="detailItem" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-        <div class="bg-white rounded-xl p-6 max-w-md w-full relative">
-            <button @click="detailItem=null" class="absolute top-3 right-3 text-slate-400 font-bold text-lg">×</button>
-            <h3 class="text-lg font-black mb-2">{{ detailItem.course_name }}</h3>
-            <p class="text-sm text-slate-600 mb-1">专业：{{ detailItem.major }} - {{ detailItem.class_name }}</p>
-            <p class="text-sm text-slate-600 mb-1">年级：{{ detailItem.entry_year }}</p>
-            <div v-if="detailItem.schedule && detailItem.schedule.length">
-                <p class="text-sm text-slate-600 mt-2 font-black uppercase tracking-wider">课程表:</p>
-                <ul class="text-sm text-slate-500 list-disc list-inside">
-                    <li v-for="sc in detailItem.schedule" :key="sc.day + sc.period">{{ sc.day }} {{ sc.period }} ({{ sc.weeks }})</li>
-                </ul>
-            </div>
-        </div>
+    <div class="bg-white rounded-xl p-6 max-w-md w-full relative">
+        <button @click="detailItem=null" class="absolute top-3 right-3 text-slate-400 font-bold text-lg">×</button>
+        <h3 class="text-lg font-black mb-2">{{ detailItem.course_name }}</h3>
+        <p class="text-sm text-slate-600 mb-1">班级：{{ detailItem.major }} - {{ detailItem.class_name }}</p>
+        <p class="text-sm text-slate-600 mb-1">年级：{{ detailItem.entry_year }}</p>
+        <p class="text-sm text-slate-600 mb-1">学时：{{ detailItem.total_hours }}</p>
+        <p class="text-sm text-slate-600 mb-1">学分：{{ detailItem.credits }}</p>
+        <p class="text-sm text-slate-600 mb-1">老师：{{ detailItem.teacher }}（{{ detailItem.role }}）</p>
+<div v-if="detailItem.schedule && detailItem.schedule.length">
+    <p class="text-sm text-slate-600 mt-2 font-black uppercase tracking-wider">上课安排:</p>
+    <ul class="text-sm text-slate-500 list-disc list-inside">
+        <li v-for="sc in detailItem.schedule" :key="sc.day + sc.period">
+            {{ sc.day }} {{ sc.period }} · {{ sc.location }} · 周次：{{ sc.weeks }}
+        </li>
+    </ul>
+</div>
+    </div>
+</div>
     </div>
 </main>
 </div>
