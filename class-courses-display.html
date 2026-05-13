@@ -41,8 +41,9 @@ body { font-family: 'Noto Sans SC', sans-serif; background-color: #fcfcfd; -webk
                 class="px-4 py-1.5 text-xs font-black rounded-xl transition-all">
                 实时
             </button>
-           <input type="date" v-model="selectedDateStr" :min="minDateStr" :max="maxDateStr"
+<input type="date" v-model="selectedDateStr" :min="minDateStr" :max="maxDateStr"
     class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold outline-none">
+        </div>
     </div>
 
     <!-- 级联筛选器 -->
@@ -129,14 +130,11 @@ createApp({
 setup() {
     const courses = ref([]);
     const detailItem = ref(null);
-   const startDate = new Date("2026-03-09"); // 开课日期
-    const endDate   = new Date("2026-08-09"); // 结束日期，自行设置
-
+    const startDate = new Date("2026-03-09"); // 开课日期
+    const endDate   = new Date("2027-03-08"); // 结束日期，自行设置
     const minDateStr = startDate.toISOString().slice(0,10);
     const maxDateStr = endDate.toISOString().slice(0,10);
     const selectedDate = ref(new Date());     // 选择日期
-
-    
     const selectedDateStr = ref(selectedDate.value.toISOString().slice(0,10));
     const isRealTime = ref(true);
 
