@@ -160,9 +160,6 @@ setup() {
 
     const selectedDateFormatted = computed(() => selectedDate.value.toLocaleDateString('zh-CN',{month:'long', day:'numeric'}));
 
-    const minDateStr = startDate.toISOString().slice(0,10);
-    const maxDateStr = new Date(startDate.getFullYear()+4,startDate.getMonth(),startDate.getDate()).toISOString().slice(0,10);
-
     const selected = ref({college:null, entry_year:null, major:null, class_name:null});
 
     const timeTable = {
