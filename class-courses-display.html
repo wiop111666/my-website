@@ -30,293 +30,258 @@
     </style>
 </head>
 <body>
-    <div id="app" v-cloak>
-        <!-- 头部固定区域 -->
-        <header class="sticky top-0 z-40 glass-header border-b border-slate-100">
-            <div class="px-5 pt-5 pb-3">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h1 class="text-2xl font-black text-slate-900 tracking-tight">智慧课表</h1>
-                        <div class="mt-1 flex flex-col gap-0.5">
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] text-slate-400 font-bold tracking-wider uppercase">更新：2026-04-25</span>
-                                <span class="w-1 h-1 bg-slate-200 rounded-full"></span>
-                                <span class="text-[10px] text-blue-600 font-black uppercase tracking-widest">作者：申威</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 模式切换 -->
-                    <div class="flex bg-slate-100/80 p-1 rounded-2xl border border-slate-200/50">
-                        <button @click="isRealTime = true" :class="isRealTime ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'" class="px-4 py-1.5 text-xs font-black rounded-xl transition-all">实时</button>
-                        <button @click="isRealTime = false" :class="!isRealTime ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'" class="px-4 py-1.5 text-xs font-black rounded-xl transition-all">全天</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 级联筛选：性能优化点 - 强制限制级联 -->
-            <div class="px-5 pb-4 flex gap-2 overflow-x-auto no-scrollbar">
-                <div class="flex-shrink-0 relative">
-                    <select v-model="selected.college" @change="resetFilters('college')" class="appearance-none bg-slate-50 border border-slate-100 pl-3 pr-8 py-2.5 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 ring-blue-500/20 outline-none">
-                        <option :value="null">请先选择学院</option>
-                        <option v-for="opt in collegeOptions" :key="opt" :value="opt">{{ opt }}</option>
-                    </select>
-                </div>
-                <div class="flex-shrink-0 relative">
-                    <select v-model="selected.entry_year" @change="resetFilters('entry_year')" :disabled="!selected.college" class="disabled:opacity-40 appearance-none bg-slate-50 border border-slate-100 pl-3 pr-8 py-2.5 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 ring-blue-500/20 outline-none">
-                        <option :value="null">所有年级</option>
-                        <option v-for="opt in entryYearOptions" :key="opt" :value="opt">{{ opt }}</option>
-                    </select>
-                </div>
-                <div class="flex-shrink-0 relative">
-                    <select v-model="selected.major" @change="resetFilters('major')" :disabled="!selected.college" class="disabled:opacity-40 appearance-none bg-slate-50 border border-slate-100 pl-3 pr-8 py-2.5 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 ring-blue-500/20 outline-none">
-                        <option :value="null">所有专业</option>
-                        <option v-for="opt in majorOptions" :key="opt" :value="opt">{{ opt }}</option>
-                    </select>
-                </div>
-                <div class="flex-shrink-0 relative">
-                    <select v-model="selected.class_name" :disabled="!selected.major" class="disabled:opacity-40 appearance-none bg-slate-50 border border-slate-100 pl-3 pr-8 py-2.5 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 ring-blue-500/20 outline-none">
-                        <option :value="null">所有班级</option>
-                        <option v-for="opt in classOptions" :key="opt" :value="opt">{{ opt }}</option>
-                    </select>
-                </div>
-            </div>
-        </header>
-
-        <main class="px-5 py-6 min-h-[60vh]">
-            <!-- 未选择学院时的空状态 -->
-            <div v-if="!selected.college" class="flex flex-col items-center justify-center py-20 text-center animate-item">
-                <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6">
-                    <span class="text-4xl">🏛️</span>
-                </div>
-                <h3 class="text-lg font-black text-slate-800 mb-2">欢迎使用</h3>
-                <p class="text-sm text-slate-400 px-10">为了保证流畅体验，请先在上方选择您的学院以加载课程数据</p>
-            </div>
-
-            <!-- 已选择学院后的内容展示 -->
-            <div v-else>
-                <div class="flex justify-between items-end mb-6 px-1">
-                    <div>
-                        <span class="text-xs font-black text-blue-600/40 uppercase tracking-widest">{{ todayMonthDay }}</span>
-                        <h2 class="text-2xl font-black text-slate-900 tracking-tight">第 {{ currentWeek }} 周 · {{ todayWeekDay }}</h2>
-                    </div>
-                    <div v-if="isRealTime" class="flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider">
-                        <div class="status-pulse"></div> 实时检索
-                    </div>
-                </div>
-
-                <!-- 课程列表渲染 -->
-                <div class="space-y-4">
-                    <div v-if="displayCourses.length === 0" class="py-20 text-center bg-white rounded-[32px] border border-dashed border-slate-200">
-                        <p class="text-3xl mb-3">🍃</p>
-                        <p class="text-slate-400 font-bold text-sm">{{ isRealTime ? '当前时间暂无课程进行' : '今日没有查找到相关课程' }}</p>
-                    </div>
-
-                    <transition-group name="fade-slide">
-                        <div v-for="(course, idx) in displayCourses" :key="course.course_name + idx" @click="openDetail(course)"
-                            class="course-card bg-white rounded-[32px] p-6 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.04)] border border-slate-50 relative">
-                            
-                            <div class="flex justify-between items-start mb-5">
-                                <div class="flex-1 pr-4">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <span class="bg-slate-900 text-white text-[9px] font-black px-2 py-0.5 rounded-lg uppercase tracking-wider">{{ course.entry_year }}</span>
-                                        <span class="text-[10px] text-slate-300 font-bold tracking-widest uppercase">{{ course.major }} - {{ course.class_name }}</span>
-                                    </div>
-                                    <h3 class="text-lg font-black text-slate-800 leading-tight">{{ course.course_name }}</h3>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-base font-black text-slate-900 tracking-tighter">{{ course.matchedSchedule.period }}</span>
-                                    <p class="text-[9px] font-bold text-slate-400 mt-0.5 tracking-tight">{{ getTimeRange(course.matchedSchedule.period) }}</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center justify-between mt-4 pt-4 border-t border-slate-50">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-[10px] font-black">👤</div>
-                                    <span class="text-xs font-bold text-slate-600">{{ course.teacher }}</span>
-                                </div>
-                                <span class="text-[11px] font-black text-slate-400 bg-slate-50 px-3 py-1.5 rounded-xl">📍 {{ course.matchedSchedule.location }}</span>
-                            </div>
-                        </div>
-                    </transition-group>
-                </div>
-            </div>
-        </main>
-
-        <!-- 详情弹窗：性能优化 - 使用 v-if 减少初始 DOM -->
-        <div v-if="detailItem" class="fixed inset-0 z-50 flex items-end">
-            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="detailItem = null"></div>
-            <div class="relative w-full bg-white rounded-t-[40px] p-8 shadow-2xl max-h-[85vh] overflow-y-auto">
-                <div class="w-12 h-1 bg-slate-100 rounded-full mx-auto mb-8"></div>
-                
-                <div class="text-center mb-8">
-                    <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-2">{{ detailItem.college }} · {{ detailItem.major }}</p>
-                    <h2 class="text-2xl font-black text-slate-900 leading-tight">{{ detailItem.course_name }}</h2>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 mb-8">
-                    <div class="bg-slate-50 p-5 rounded-[28px] text-center border border-slate-100/50">
-                        <p class="text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-widest">学分</p>
-                        <p class="text-xl font-black text-slate-800">{{ detailItem.credits }}</p>
-                    </div>
-                    <div class="bg-slate-50 p-5 rounded-[28px] text-center border border-slate-100/50">
-                        <p class="text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-widest">总学时</p>
-                        <p class="text-xl font-black text-slate-800">{{ detailItem.total_hours }}</p>
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest px-2">该课程所有时间安排</p>
-                    <div v-for="(sc, i) in detailItem.schedule" :key="i" class="flex items-center gap-4 p-4 rounded-[24px] border border-slate-100 bg-white">
-                        <div class="flex flex-col items-center justify-center w-12 h-12 rounded-2xl bg-slate-100 text-slate-500">
-                            <span class="text-[10px] font-bold">{{ sc.day.slice(-1) }}</span>
-                            <span class="text-xs font-black">{{ sc.period.split('-')[0] }}</span>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-sm font-bold text-slate-800">{{ sc.location }}</p>
-                            <p class="text-[10px] font-medium text-slate-400">{{ sc.weeks }}</p>
+<div id="app" v-cloak>
+    <!-- 头部固定区域 -->
+    <header class="sticky top-0 z-40 glass-header border-b border-slate-100">
+        <div class="px-5 pt-5 pb-3">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="text-2xl font-black text-slate-900 tracking-tight">智慧课表</h1>
+                    <div class="mt-1 flex flex-col gap-0.5">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] text-slate-400 font-bold tracking-wider uppercase">更新：2026-04-25</span>
+                            <span class="w-1 h-1 bg-slate-200 rounded-full"></span>
+                            <span class="text-[10px] text-blue-600 font-black uppercase tracking-widest">作者：申威</span>
                         </div>
                     </div>
                 </div>
-                
-                <button @click="detailItem = null" class="w-full mt-8 py-4 bg-slate-900 text-white rounded-[24px] font-bold text-sm shadow-xl shadow-slate-200 active:scale-95 transition-transform">返回列表</button>
+                <!-- 模式切换 -->
+                <div class="flex bg-slate-100/80 p-1 rounded-2xl border border-slate-200/50 items-center gap-2">
+                    <button @click="isRealTime = true" :class="isRealTime ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'" class="px-4 py-1.5 text-xs font-black rounded-xl transition-all">实时</button>
+                    <button @click="isRealTime = false" :class="!isRealTime ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'" class="px-4 py-1.5 text-xs font-black rounded-xl transition-all">全天</button>
+                    <input type="date" v-model="selectedDateStr" :min="minDateStr" :max="maxDateStr"
+                        class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold outline-none">
+                </div>
             </div>
         </div>
+
+        <!-- 级联筛选 -->
+        <div class="px-5 pb-4 flex gap-2 overflow-x-auto no-scrollbar">
+            <div class="flex-shrink-0 relative">
+                <select v-model="selected.college" @change="resetFilters('college')" class="appearance-none bg-slate-50 border border-slate-100 pl-3 pr-8 py-2.5 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 ring-blue-500/20 outline-none">
+                    <option :value="null">请先选择学院</option>
+                    <option v-for="opt in collegeOptions" :key="opt" :value="opt">{{ opt }}</option>
+                </select>
+            </div>
+            <div class="flex-shrink-0 relative">
+                <select v-model="selected.entry_year" @change="resetFilters('entry_year')" :disabled="!selected.college" class="disabled:opacity-40 appearance-none bg-slate-50 border border-slate-100 pl-3 pr-8 py-2.5 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 ring-blue-500/20 outline-none">
+                    <option :value="null">所有年级</option>
+                    <option v-for="opt in entryYearOptions" :key="opt" :value="opt">{{ opt }}</option>
+                </select>
+            </div>
+            <div class="flex-shrink-0 relative">
+                <select v-model="selected.major" @change="resetFilters('major')" :disabled="!selected.college" class="disabled:opacity-40 appearance-none bg-slate-50 border border-slate-100 pl-3 pr-8 py-2.5 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 ring-blue-500/20 outline-none">
+                    <option :value="null">所有专业</option>
+                    <option v-for="opt in majorOptions" :key="opt" :value="opt">{{ opt }}</option>
+                </select>
+            </div>
+            <div class="flex-shrink-0 relative">
+                <select v-model="selected.class_name" :disabled="!selected.major" class="disabled:opacity-40 appearance-none bg-slate-50 border border-slate-100 pl-3 pr-8 py-2.5 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 ring-blue-500/20 outline-none">
+                    <option :value="null">所有班级</option>
+                    <option v-for="opt in classOptions" :key="opt" :value="opt">{{ opt }}</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main class="px-5 py-6 min-h-[60vh]">
+        <!-- 未选择学院时的空状态 -->
+        <div v-if="!selected.college" class="flex flex-col items-center justify-center py-20 text-center animate-item">
+            <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6">
+                <span class="text-4xl">🏛️</span>
+            </div>
+            <h3 class="text-lg font-black text-slate-800 mb-2">欢迎使用</h3>
+            <p class="text-sm text-slate-400 px-10">为了保证流畅体验，请先在上方选择您的学院以加载课程数据</p>
+        </div>
+
+        <!-- 已选择学院后的内容展示 -->
+        <div v-else>
+            <div class="flex justify-between items-end mb-6 px-1">
+                <div>
+                    <span class="text-xs font-black text-blue-600/40 uppercase tracking-widest">{{ selectedDateFormatted }}</span>
+                    <h2 class="text-2xl font-black text-slate-900 tracking-tight">第 {{ currentWeek }} 周 · {{ todayWeekDay }}</h2>
+                </div>
+                <div v-if="isRealTime" class="flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider">
+                    <div class="status-pulse"></div> 实时检索
+                </div>
+            </div>
+
+            <!-- 课程列表渲染 -->
+            <div class="space-y-4">
+                <div v-if="displayCourses.length === 0" class="py-20 text-center bg-white rounded-[32px] border border-dashed border-slate-200">
+                    <p class="text-3xl mb-3">🍃</p>
+                    <p class="text-slate-400 font-bold text-sm">{{ isRealTime ? '当前时间暂无课程进行' : '今日没有查找到相关课程' }}</p>
+                </div>
+
+                <transition-group name="fade-slide">
+                    <div v-for="(course, idx) in displayCourses" :key="course.course_name + idx" @click="openDetail(course)"
+                        class="course-card bg-white rounded-[32px] p-6 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.04)] border border-slate-50 relative">
+                        
+                        <div class="flex justify-between items-start mb-5">
+                            <div class="flex-1 pr-4">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="bg-slate-900 text-white text-[9px] font-black px-2 py-0.5 rounded-lg uppercase tracking-wider">{{ course.entry_year }}</span>
+                                    <span class="text-[10px] text-slate-300 font-bold tracking-widest uppercase">{{ course.major }} - {{ course.class_name }}</span>
+                                </div>
+                                <h3 class="text-lg font-black text-slate-800 leading-tight">{{ course.course_name }}</h3>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-base font-black text-slate-900 tracking-tighter">{{ course.matchedSchedule.period }}</span>
+                                <p class="text-[9px] font-bold text-slate-400 mt-0.5 tracking-tight">{{ getTimeRange(course.matchedSchedule.period) }}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between mt-4 pt-4 border-t border-slate-50">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-[10px] font-black">👤</div>
+                                <span class="text-xs font-bold text-slate-600">{{ course.teacher }}</span>
+                            </div>
+                            <span class="text-[11px] font-black text-slate-400 bg-slate-50 px-3 py-1.5 rounded-xl">📍 {{ course.matchedSchedule.location }}</span>
+                        </div>
+                    </div>
+                </transition-group>
+            </div>
+        </div>
+    </main>
+
+    <!-- 详情弹窗 -->
+    <div v-if="detailItem" class="fixed inset-0 z-50 flex items-end">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="detailItem = null"></div>
+        <div class="relative w-full bg-white rounded-t-[40px] p-8 shadow-2xl max-h-[85vh] overflow-y-auto">
+            <div class="w-12 h-1 bg-slate-100 rounded-full mx-auto mb-8"></div>
+            
+            <div class="text-center mb-8">
+                <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-2">{{ detailItem.college }} · {{ detailItem.major }}</p>
+                <h2 class="text-2xl font-black text-slate-900 leading-tight">{{ detailItem.course_name }}</h2>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="bg-slate-50 p-5 rounded-[28px] text-center border border-slate-100/50">
+                    <p class="text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-widest">学分</p>
+                    <p class="text-xl font-black text-slate-800">{{ detailItem.credits }}</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-[28px] text-center border border-slate-100/50">
+                    <p class="text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-widest">总学时</p>
+                    <p class="text-xl font-black text-slate-800">{{ detailItem.total_hours }}</p>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest px-2">该课程所有时间安排</p>
+                <div v-for="(sc, i) in detailItem.schedule" :key="i" class="flex items-center gap-4 p-4 rounded-[24px] border border-slate-100 bg-white">
+                    <div class="flex flex-col items-center justify-center w-12 h-12 rounded-2xl bg-slate-100 text-slate-500">
+                        <span class="text-[10px] font-bold">{{ sc.day.slice(-1) }}</span>
+                        <span class="text-xs font-black">{{ sc.period.split('-')[0] }}</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-bold text-slate-800">{{ sc.location }}</p>
+                        <p class="text-[10px] font-medium text-slate-400">{{ sc.weeks }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button @click="detailItem = null" class="w-full mt-8 py-4 bg-slate-900 text-white rounded-[24px] font-bold text-sm shadow-xl shadow-slate-200 active:scale-95 transition-transform">返回列表</button>
+        </div>
     </div>
+</div>
 
-    <script>
-        const { createApp, ref, computed, onMounted } = Vue;
+<script>
+const { createApp, ref, computed, onMounted, watch } = Vue;
 
-        createApp({
-            setup() {
-                const courses = ref([]);
-                const isRealTime = ref(true);
-                const detailItem = ref(null);
-                const currentWeek = ref(7); // 动态逻辑可自行接入
+createApp({
+    setup() {
+        const courses = ref([]);
+        const detailItem = ref(null);
+        const isRealTime = ref(true);
 
-                // 筛选器状态
-                const selected = ref({
-                    college: null,
-                    entry_year: null,
-                    major: null,
-                    class_name: null
-                });
+        const startDate = new Date("2026-03-09"); // 开课日期
+        const selectedDate = ref(new Date());     // 当前选择日期
+        const selectedDateStr = ref(selectedDate.value.toISOString().slice(0,10));
+        watch(selectedDateStr, val => selectedDate.value = new Date(val));
 
-                // 标准时间表
-                const timeTable = {
-                    "1-2节": ["08:10", "09:50"],
-                    "3-4节": ["10:20", "12:00"],
-                    "5-6节": ["14:00", "15:40"],
-                    "7-8节": ["16:10", "17:50"],
-                    "9-10节": ["19:00", "20:40"]
-                };
+        const minDateStr = startDate.toISOString().slice(0,10);
+        const maxDateStr = new Date(startDate.getFullYear()+4, startDate.getMonth(), startDate.getDate()).toISOString().slice(0,10);
 
-                const today = new Date();
-                const todayMonthDay = today.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' });
-                const todayWeekDay = today.toLocaleDateString('zh-CN', { weekday: 'long' });
+        const currentWeek = computed(() => {
+            const diffDays = Math.floor((selectedDate.value - startDate) / (1000*60*60*24));
+            return Math.floor(diffDays / 7) + 1;
+        });
 
-                // --- 优化后的级联选项：只有当前面的选了，才计算后面的 ---
-                const collegeOptions = computed(() => {
-                    return [...new Set(courses.value.map(c => c.college))].sort();
-                });
+        const todayWeekDay = computed(() => {
+            const dayNames = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+            return dayNames[selectedDate.value.getDay()];
+        });
 
-                const entryYearOptions = computed(() => {
-                    if (!selected.value.college) return [];
-                    return [...new Set(courses.value.filter(c => c.college === selected.value.college).map(c => c.entry_year))].sort();
-                });
+        const selectedDateFormatted = computed(() => selectedDate.value.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' }));
 
-                const majorOptions = computed(() => {
-                    if (!selected.value.college) return [];
-                    let filtered = courses.value.filter(c => c.college === selected.value.college);
-                    if (selected.value.entry_year) filtered = filtered.filter(c => c.entry_year === selected.value.entry_year);
-                    return [...new Set(filtered.map(c => c.major))].sort();
-                });
+        const selected = ref({ college:null, entry_year:null, major:null, class_name:null });
+        const timeTable = { "1-2节":["08:10","09:50"], "3-4节":["10:20","12:00"], "5-6节":["14:00","15:40"], "7-8节":["16:10","17:50"], "9-10节":["19:00","20:40"] };
 
-                const classOptions = computed(() => {
-                    if (!selected.value.major) return [];
-                    return [...new Set(courses.value.filter(c => c.major === selected.value.major).map(c => c.class_name))].sort();
-                });
+        const collegeOptions = computed(() => [...new Set(courses.value.map(c => c.college))].sort());
+        const entryYearOptions = computed(() => selected.value.college ? [...new Set(courses.value.filter(c => c.college===selected.value.college).map(c=>c.entry_year))].sort() : []);
+        const majorOptions = computed(() => {
+            if(!selected.value.college) return [];
+            let filtered = courses.value.filter(c => c.college===selected.value.college);
+            if(selected.value.entry_year) filtered = filtered.filter(c => c.entry_year===selected.value.entry_year);
+            return [...new Set(filtered.map(c=>c.major))].sort();
+        });
+        const classOptions = computed(() => selected.value.major ? [...new Set(courses.value.filter(c=>c.major===selected.value.major).map(c=>c.class_name))].sort() : []);
 
-                const resetFilters = (level) => {
-                    if (level === 'college') {
-                        selected.value.entry_year = null;
-                        selected.value.major = null;
-                        selected.value.class_name = null;
-                    } else if (level === 'entry_year') {
-                        selected.value.major = null;
-                        selected.value.class_name = null;
-                    } else if (level === 'major') {
-                        selected.value.class_name = null;
+        const resetFilters = (level) => {
+            if(level==='college'){ selected.value.entry_year=null; selected.value.major=null; selected.value.class_name=null; }
+            else if(level==='entry_year'){ selected.value.major=null; selected.value.class_name=null; }
+            else if(level==='major'){ selected.value.class_name=null; }
+        };
+
+        const parseWeeks = (str) => {
+            const res=[];
+            str.split(',').forEach(p=>{
+                const clean=p.replace('周','');
+                if(clean.includes('-')){
+                    const [s,e]=clean.split('-').map(Number);
+                    for(let i=s;i<=e;i++) res.push(i);
+                } else res.push(parseInt(clean));
+            });
+            return res;
+        };
+
+        const displayCourses = computed(() => {
+            if(!selected.value.college) return [];
+            const currentTime = new Date().toTimeString().slice(0,5);
+            return courses.value.filter(c=>{
+                if(c.college!==selected.value.college) return false;
+                if(selected.value.entry_year && c.entry_year!==selected.value.entry_year) return false;
+                if(selected.value.major && c.major!==selected.value.major) return false;
+                if(selected.value.class_name && c.class_name!==selected.value.class_name) return false;
+
+                const matched = c.schedule.find(sc=>{
+                    if(sc.day!==todayWeekDay.value) return false;
+                    if(!parseWeeks(sc.weeks).includes(currentWeek.value)) return false;
+                    if(isRealTime.value){
+                        const range=timeTable[sc.period];
+                        return range && currentTime>=range[0] && currentTime<=range[1];
                     }
-                };
-
-                // --- 高效解析函数 ---
-                const parseWeeks = (str) => {
-                    const res = [];
-                    str.split(',').forEach(p => {
-                        const clean = p.replace('周', '');
-                        if (clean.includes('-')) {
-                            const [s, e] = clean.split('-').map(Number);
-                            for (let i = s; i <= e; i++) res.push(i);
-                        } else { res.push(parseInt(clean)); }
-                    });
-                    return res;
-                };
-
-                // --- 核心显示逻辑：性能关键点 ---
-                const displayCourses = computed(() => {
-                    if (!selected.value.college) return []; // 性能优化：未选学院不计算
-
-                    const now = new Date();
-                    const dayNames = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-                    const todayName = dayNames[now.getDay()];
-                    const currentTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-
-                    return courses.value.filter(c => {
-                        // 基础级联筛选
-                        if (c.college !== selected.value.college) return false;
-                        if (selected.value.entry_year && c.entry_year !== selected.value.entry_year) return false;
-                        if (selected.value.major && c.major !== selected.value.major) return false;
-                        if (selected.value.class_name && c.class_name !== selected.value.class_name) return false;
-
-                        // 查找今日匹配的排课
-                        const matched = c.schedule.find(sc => {
-                            if (sc.day !== todayName) return false;
-                            if (!parseWeeks(sc.weeks).includes(currentWeek.value)) return false;
-                            
-                            if (isRealTime.value) {
-                                const range = timeTable[sc.period];
-                                return range && currentTime >= range[0] && currentTime <= range[1];
-                            }
-                            return true;
-                        });
-
-                        if (matched) {
-                            c.matchedSchedule = matched;
-                            return true;
-                        }
-                        return false;
-                    }).sort((a, b) => a.matchedSchedule.period.localeCompare(b.matchedSchedule.period));
+                    return true;
                 });
+                if(matched){ c.matchedSchedule = matched; return true; }
+                return false;
+            }).sort((a,b)=>a.matchedSchedule.period.localeCompare(b.matchedSchedule.period));
+        });
 
-                const getTimeRange = (p) => timeTable[p] ? timeTable[p].join(' - ') : '';
-                const openDetail = (c) => detailItem.value = c;
+        const getTimeRange = (p) => timeTable[p]?timeTable[p].join(' - '):'';
+        const openDetail = (c) => detailItem.value = c;
 
-                onMounted(async () => {
-                    try {
-                        const res = await fetch('class_courses_20260513.json');
-                        courses.value = await res.json();
-                    } catch (e) {
-                        console.error("加载数据失败，请确保 class_courses.json 与 HTML 在同一目录且通过服务器环境访问。");
-                    }
-                });
+        onMounted(async ()=>{
+            try{
+                const res = await fetch('class_courses_20260513.json');
+                courses.value = await res.json();
+            }catch(e){ console.error("加载数据失败，请确保 class_courses_20260513.json 与 HTML 在同一目录且通过服务器环境访问。"); }
+        });
 
-                return {
-                    isRealTime, selected, displayCourses, detailItem, todayMonthDay, todayWeekDay, currentWeek,
-                    collegeOptions, entryYearOptions, majorOptions, classOptions,
-                    resetFilters, openDetail, getTimeRange
-                };
-            }
-        }).mount('#app');
-    </script>
+        return { isRealTime, selected, displayCourses, detailItem, currentWeek, todayWeekDay, selectedDateStr, selectedDateFormatted, minDateStr, maxDateStr,
+            collegeOptions, entryYearOptions, majorOptions, classOptions, resetFilters, getTimeRange, openDetail };
+    }
+}).mount('#app');
+</script>
 </body>
 </html>
