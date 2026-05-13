@@ -13,7 +13,7 @@ body { font-family: 'Noto Sans SC', sans-serif; background-color: #fcfcfd; -webk
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .fade-slide-enter-active { transition: all 0.3s ease-out; }
 .fade-slide-enter-from { opacity: 0; transform: translateY(15px); }
-.course-card { transform: translateZ(0); will-change: transform; transition: all 0.2s ease; }
+.course-card { transform: translateZ(0); will-change: transform; transition: all 0.2s ease; cursor:pointer; }
 .course-card:active { transform: scale(0.97); }
 .status-pulse { width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981; animation: pulse 2s infinite; }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
@@ -33,7 +33,7 @@ body { font-family: 'Noto Sans SC', sans-serif; background-color: #fcfcfd; -webk
             </div>
         </div>
 
-        <!-- 实时模块 -->
+        <!-- 实时模块 + 日期 -->
         <div class="flex items-center gap-2">
             <button @click="toggleRealTime" 
                 :class="isRealTime ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'"
@@ -41,8 +41,8 @@ body { font-family: 'Noto Sans SC', sans-serif; background-color: #fcfcfd; -webk
                 class="px-4 py-1.5 text-xs font-black rounded-xl transition-all">
                 实时
             </button>
-<input type="date" v-model="selectedDateStr" :min="minDateStr" :max="maxDateStr"
-    class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold outline-none">
+            <input type="date" v-model="selectedDateStr" :min="minDateStr" :max="maxDateStr"
+                class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold outline-none">
         </div>
     </div>
 
@@ -102,7 +102,8 @@ body { font-family: 'Noto Sans SC', sans-serif; background-color: #fcfcfd; -webk
             </div>
 
             <transition-group name="fade-slide">
-                <div v-for="(course, idx) in displayCourses" :key="course.course_name + idx" class="course-card bg-white rounded-[32px] p-6 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.04)] border border-slate-50 relative">
+                <div v-for="(course, idx) in displayCourses" :key="course.course_name + idx" @click="openDetail(course)"
+                    class="course-card bg-white rounded-[32px] p-6 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.04)] border border-slate-50 relative">
                     <div class="flex justify-between items-start mb-5">
                         <div class="flex-1 pr-4">
                             <div class="flex items-center gap-2 mb-2">
@@ -112,12 +113,28 @@ body { font-family: 'Noto Sans SC', sans-serif; background-color: #fcfcfd; -webk
                             <h3 class="text-lg font-black text-slate-800 leading-tight">{{ course.course_name }}</h3>
                         </div>
                         <div class="text-right">
-                            <span class="text-base font-black text-slate-900 tracking-tighter">{{ course.matchedSchedule.period }}</span>
-                            <p class="text-[9px] font-bold text-slate-400 mt-0.5 tracking-tight">{{ getTimeRange(course.matchedSchedule.period) }}</p>
+                            <span class="text-base font-black text-slate-900 tracking-tighter">{{ course.matchedSchedule?.period || '-' }}</span>
+                            <p class="text-[9px] font-bold text-slate-400 mt-0.5 tracking-tight">{{ getTimeRange(course.matchedSchedule?.period) }}</p>
                         </div>
                     </div>
                 </div>
             </transition-group>
+        </div>
+    </div>
+
+    <!-- 弹窗 -->
+    <div v-if="detailItem" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full relative">
+            <button @click="detailItem=null" class="absolute top-3 right-3 text-slate-400 font-bold text-lg">×</button>
+            <h3 class="text-lg font-black mb-2">{{ detailItem.course_name }}</h3>
+            <p class="text-sm text-slate-600 mb-1">专业：{{ detailItem.major }} - {{ detailItem.class_name }}</p>
+            <p class="text-sm text-slate-600 mb-1">年级：{{ detailItem.entry_year }}</p>
+            <div v-if="detailItem.schedule && detailItem.schedule.length">
+                <p class="text-sm text-slate-600 mt-2 font-black uppercase tracking-wider">课程表:</p>
+                <ul class="text-sm text-slate-500 list-disc list-inside">
+                    <li v-for="sc in detailItem.schedule" :key="sc.day + sc.period">{{ sc.day }} {{ sc.period }} ({{ sc.weeks }})</li>
+                </ul>
+            </div>
         </div>
     </div>
 </main>
@@ -131,10 +148,10 @@ setup() {
     const courses = ref([]);
     const detailItem = ref(null);
     const startDate = new Date("2026-03-09"); // 开课日期
-    const endDate   = new Date("2026-08-09"); // 结束日期，自行设置
+    const endDate   = new Date("2026-08-09"); // 结束日期
     const minDateStr = startDate.toISOString().slice(0,10);
     const maxDateStr = endDate.toISOString().slice(0,10);
-    const selectedDate = ref(new Date());     // 选择日期
+    const selectedDate = ref(new Date());
     const selectedDateStr = ref(selectedDate.value.toISOString().slice(0,10));
     const isRealTime = ref(true);
 
@@ -172,7 +189,12 @@ setup() {
 
     const collegeOptions = computed(()=>[...new Set(courses.value.map(c=>c.college))].sort());
     const entryYearOptions = computed(()=>selected.value.college ? [...new Set(courses.value.filter(c=>c.college===selected.value.college).map(c=>c.entry_year))].sort() : []);
-    const majorOptions = computed(()=>{ if(!selected.value.college) return []; let f=courses.value.filter(c=>c.college===selected.value.college); if(selected.value.entry_year) f=f.filter(c=>c.entry_year===selected.value.entry_year); return [...new Set(f.map(c=>c.major))].sort();});
+    const majorOptions = computed(()=>{
+        if(!selected.value.college) return [];
+        let f=courses.value.filter(c=>c.college===selected.value.college);
+        if(selected.value.entry_year) f=f.filter(c=>c.entry_year===selected.value.entry_year);
+        return [...new Set(f.map(c=>c.major))].sort();
+    });
     const classOptions = computed(()=>selected.value.major ? [...new Set(courses.value.filter(c=>c.major===selected.value.major).map(c=>c.class_name))].sort() : []);
 
     const resetFilters = (level)=>{
@@ -182,7 +204,14 @@ setup() {
     };
 
     const parseWeeks = (str)=>{
-        const res=[]; str.split(',').forEach(p=>{ const clean=p.replace('周',''); if(clean.includes('-')){ const [s,e]=clean.split('-').map(Number); for(let i=s;i<=e;i++) res.push(i);} else res.push(Number(clean));}); return res;
+        const res=[]; str.split(',').forEach(p=>{
+            const clean=p.replace('周','');
+            if(clean.includes('-')){
+                const [s,e]=clean.split('-').map(Number);
+                for(let i=s;i<=e;i++) res.push(i);
+            } else res.push(Number(clean));
+        });
+        return res;
     };
 
     const displayCourses = computed(()=>{
@@ -208,11 +237,13 @@ setup() {
 
             if(matched){ c.matchedSchedule = matched; return true;}
             return false;
-        }).sort((a,b)=>a.matchedSchedule.period.localeCompare(b.matchedSchedule.period));
+        }).sort((a,b)=> (a.matchedSchedule?.period || '').localeCompare(b.matchedSchedule?.period || ''));
     });
 
     const getTimeRange = (p)=>timeTable[p]?timeTable[p].join(' - '):'';
     const toggleRealTime = ()=>{ if(isToday.value) isRealTime.value = !isRealTime.value; }
+
+    const openDetail = (course)=>{ detailItem.value = course; }
 
     onMounted(async ()=>{
         try{ const res = await fetch('class_courses_20260513.json'); courses.value = await res.json(); }
@@ -220,7 +251,8 @@ setup() {
     });
 
     return { selectedDateStr, selectedDateFormatted, minDateStr, maxDateStr, isRealTime, isToday, toggleRealTime,
-        selected, displayCourses, currentWeek, todayWeekDay, collegeOptions, entryYearOptions, majorOptions, classOptions, resetFilters, getTimeRange };
+        selected, displayCourses, currentWeek, todayWeekDay, collegeOptions, entryYearOptions, majorOptions, classOptions,
+        resetFilters, getTimeRange, detailItem, openDetail };
 }
 }).mount('#app');
 </script>
